@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Follow-Up Operacional</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<style>
+/* Layout: menu lateral escuro fixo, área de trabalho clara com cabeçalho, painel e relatórios. */
+:root{
+  --bg:#F2F5F6;--panel:#FFFFFF;--panel2:#E8EEF0;--fg:#132A35;--muted:#566B76;--line:#D5DFE3;
+  --accent:#0E6F86;--accent-bg:#DCEEF2;--on-accent:#FFFFFF;--bar:#2B8CA3;--bar-dim:#B9D5DC;
+  --ok:#1C6B45;--ok-bg:#DAF0E3;--busca:#1F5A99;--busca-bg:#DDE9F7;--calc:#6541A5;--calc-bg:#EAE2F7;
+  --novo:#8A5300;--novo-bg:#FBEBCC;--conf:#566A74;--conf-bg:#E4EAEC;--alerta:#B3321E;--alerta-bg:#FBE3DE;
+  --side:#0E2A36;--side2:#173B4A;--side-fg:#E4EEF1;--side-mut:#94AEB9;--brass:#D8A94E;
+  --f-disp:"Schibsted Grotesk","Segoe UI",system-ui,sans-serif;--f-body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;--f-mono:"IBM Plex Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0C1A20;--panel:#14252D;--panel2:#1E333D;--fg:#E6EEF1;--muted:#9DB0B9;--line:#2A404A;
+  --accent:#6CC0D6;--accent-bg:#163F4C;--on-accent:#07222B;--bar:#5DB1C6;--bar-dim:#2C505C;
+  --ok:#7FD6A3;--ok-bg:#163C2A;--busca:#8DBDF2;--busca-bg:#1A3553;--calc:#BDA2EC;--calc-bg:#32264E;
+  --novo:#F0BE6A;--novo-bg:#463212;--conf:#B4C4CB;--conf-bg:#2A3D46;--alerta:#F49C8B;--alerta-bg:#4D2118;
+  --side:#08161C;--side2:#14303B;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0C1A20;--panel:#14252D;--panel2:#1E333D;--fg:#E6EEF1;--muted:#9DB0B9;--line:#2A404A;
+  --accent:#6CC0D6;--accent-bg:#163F4C;--on-accent:#07222B;--bar:#5DB1C6;--bar-dim:#2C505C;
+  --ok:#7FD6A3;--ok-bg:#163C2A;--busca:#8DBDF2;--busca-bg:#1A3553;--calc:#BDA2EC;--calc-bg:#32264E;
+  --novo:#F0BE6A;--novo-bg:#463212;--conf:#B4C4CB;--conf-bg:#2A3D46;--alerta:#F49C8B;--alerta-bg:#4D2118;
+  --side:#08161C;--side2:#14303B;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:14px/1.45 var(--f-body)}
+#app{display:grid;grid-template-columns:252px minmax(0,1fr);min-height:100vh;align-items:start}
+.side{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--side);color:var(--side-fg);display:flex;flex-direction:column;gap:18px;padding-block:22px 16px;padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:14px}
+.brand{padding:0 10px}.brand b{display:block;font:600 21px/1.1 var(--f-disp);letter-spacing:-.2px}.brand span{font-size:12px;color:var(--brass);letter-spacing:.6px}
+.nav{display:grid;gap:14px}.grp{display:grid;gap:2px}.grp>span{font-size:11px;letter-spacing:.7px;color:var(--side-mut);padding:0 10px 4px}
+.nav button{display:flex;justify-content:space-between;gap:8px;align-items:center;width:100%;text-align:left;background:transparent;border:0;color:var(--side-fg);min-height:33px;padding:0 10px;font:400 13.5px var(--f-body);border-radius:6px;border-left:0}
+.nav button:hover{background:var(--side2)}
+.nav button.on{background:var(--side2);box-shadow:inset 3px 0 0 var(--brass);font-weight:600}
+.nav .n{font:400 11px var(--f-mono);color:var(--side-mut)}
+.foot{margin-top:auto;font-size:12px;line-height:1.4;color:var(--side-mut);padding:12px 10px 0;border-top:1px solid var(--side2);display:grid;gap:4px}.foot strong{color:var(--side-fg);font-weight:600}
+.main{min-width:0;padding-block:22px 48px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));display:grid;gap:16px;align-content:start}
+.main>*{min-width:0}
+h1{font:600 clamp(24px,3vw,30px)/1.1 var(--f-disp);margin:0;letter-spacing:-.4px;text-wrap:balance}
+h2{font:600 15.5px/1.25 var(--f-disp);margin:0;letter-spacing:-.1px}
+.top{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-start}
+.top>div{min-width:0}.sub{color:var(--muted);margin:4px 0 0;max-width:70ch;font-size:13.5px}
+.acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,.btn{font:500 13px var(--f-body);color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:7px;min-height:36px;padding:0 13px;cursor:pointer}
+button:hover,.btn:hover{border-color:var(--accent)}
+.pri{background:var(--accent);color:var(--on-accent);border-color:var(--accent);display:inline-flex;align-items:center}
+:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.side :focus-visible{outline-color:var(--brass)}
+.src{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;padding:10px 14px;background:var(--panel2);border-radius:8px;font-size:13px}
+.src strong{font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}
+.kpi{text-align:left;background:var(--panel);min-height:92px;padding:14px;display:grid;gap:4px;align-content:start;border-radius:10px;font-weight:400}
+.kpi span{font-size:12.5px;color:var(--muted)}.kpi b{font:600 28px/1.1 var(--f-disp);letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.kpi small{font-size:12px;color:var(--muted)}.kpi.alto b{color:var(--alerta)}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
+.s4{grid-column:span 4}.s5{grid-column:span 5}.s6{grid-column:span 6}.s7{grid-column:span 7}.s8{grid-column:span 8}.s12{grid-column:span 12}
+@media(max-width:1180px){.s4,.s5,.s7,.s8{grid-column:span 6}}
+@media(max-width:820px){.s4,.s5,.s6,.s7,.s8{grid-column:span 12}}
+.cols{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px}
+@media(max-width:860px){.cols{grid-template-columns:minmax(0,1fr)}}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px;min-width:0;align-content:start}
+.head{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center}
+.note{font-size:13px;color:var(--muted);margin:0}
+.chip{display:inline-block;font-size:12px;font-weight:500;padding:1px 7px;border-radius:4px;white-space:nowrap}
+.o-p{background:var(--ok-bg);color:var(--ok)}.o-m{background:var(--busca-bg);color:var(--busca)}.o-c{background:var(--calc-bg);color:var(--calc)}.o-n{background:var(--novo-bg);color:var(--novo)}.o-q{background:var(--conf-bg);color:var(--conf)}
+.chip.red{background:var(--alerta-bg);color:var(--alerta)}.chip.grn{background:var(--ok-bg);color:var(--ok)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:1px}
+.d-p{background:var(--ok)}.d-m{background:var(--busca)}.d-c{background:var(--calc)}.d-n{background:var(--novo)}.d-q{background:var(--conf)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+input,select{font:13px var(--f-body);color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:6px;min-height:34px;padding:0 8px;max-width:100%}
+#q{width:280px}
+.fbar{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.tw{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.box .tw{border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:8px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:var(--bg)}
+th{font-size:12px;font-weight:500;color:var(--muted);white-space:nowrap;background:var(--panel)}
+th button{all:unset;cursor:pointer}th button:focus-visible{outline:2px solid var(--accent)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tfoot td{font-weight:600;border-top:1px solid var(--line);border-bottom:0}
+.stick{position:sticky;left:0;background:var(--panel);z-index:1;font-family:var(--f-mono);white-space:nowrap}
+.c{width:132px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mono{font-family:var(--f-mono);font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+td input,td select{width:132px;background:var(--bg)}
+td input.sm{width:76px}
+.empty{color:var(--muted)}
+.hb{display:grid;gap:2px}
+.hb button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:minmax(84px,38%) minmax(0,1fr) 42px;gap:10px;align-items:center;min-height:30px;padding:0 6px;border-radius:6px;font-size:13px;cursor:pointer}
+.hb button:hover{background:var(--bg)}.hb button:focus-visible{outline:2px solid var(--accent)}
+.hb .l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hb .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:500}
+.hb .t{height:10px}.hb .t i{display:block;height:10px;min-width:2px;background:var(--bar);border-radius:0 4px 4px 0}
+.hb.tem button:not(.sel) .t i{background:var(--bar-dim)}.hb button.sel{background:var(--accent-bg);font-weight:600}
+.colc{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px;align-items:end;border-bottom:1px solid var(--line);height:158px}
+.colc button{all:unset;box-sizing:border-box;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;cursor:pointer;border-radius:6px 6px 0 0;font-size:12px;font-variant-numeric:tabular-nums}
+.colc button:hover{background:var(--bg)}.colc button:focus-visible{outline:2px solid var(--accent)}
+.colc i{display:block;width:min(70%,34px);background:var(--bar);border-radius:4px 4px 0 0}.colc.tem button:not(.sel) i{background:var(--bar-dim)}
+.coll{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px;text-align:center;font-size:11.5px;color:var(--muted);margin-top:-6px}
+.coll .hoje{color:var(--fg);font-weight:600}
+.tm{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}.tm:last-child{border-bottom:0}.tm b{font:600 17px var(--f-disp);font-variant-numeric:tabular-nums}
+.seg{display:flex;flex-wrap:wrap;gap:4px}.seg button{min-height:32px;padding:0 11px;font-weight:400;background:transparent}.seg button.on{background:var(--accent-bg);color:var(--accent);border-color:var(--accent);font-weight:600}
+.fchip{display:inline-flex;align-items:center;gap:6px;background:var(--accent-bg);color:var(--accent);border:0;border-radius:5px;min-height:28px;padding:0 9px;font-size:12.5px}
+.bar{display:grid;grid-template-columns:96px minmax(0,1fr) 44px;gap:8px;align-items:center;font-size:13px}
+.pag{display:flex;gap:8px;align-items:center;justify-content:flex-end;font-size:13px;color:var(--muted)}
+.err{color:var(--alerta);font-size:13px;margin:0}
+.drop{border:1.5px dashed var(--line);border-radius:8px;padding:18px;text-align:center}
+.drop.over{border-color:var(--accent);background:var(--accent-bg)}
+.ov{position:fixed;inset:0;z-index:20;background:rgba(8,20,26,.55);display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.pop{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--alerta);border-radius:10px;padding:18px;width:min(920px,100%);max-height:100%;overflow:auto;display:grid;gap:12px}
+.pop h2{color:var(--alerta);font-size:20px}
+th.nx{background:var(--accent-bg)}th.nx button{color:var(--accent);font-weight:600}
+th button{display:inline-flex;align-items:center;gap:2px;white-space:nowrap}th .ar{font-size:11px;color:var(--muted);opacity:.5}th .ar.on{opacity:1;color:var(--accent)}th button:hover .ar{opacity:1}
+.obsb{all:unset;box-sizing:border-box;display:block;width:220px;min-height:30px;padding:5px 8px;border:1px dashed var(--line);border-radius:6px;cursor:pointer;font-size:13px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--bg)}
+.obsb:hover,.obsb:focus-visible{border-color:var(--accent);border-style:solid;outline:none}.obsb .mono{color:var(--muted)}.obsn{font-size:11px;color:var(--accent);font-weight:600}
+#obsbox{position:fixed;z-index:25;width:min(380px,calc(100vw - 16px));background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 30px rgba(8,20,26,.22);padding:12px;display:grid;gap:10px}
+#obsbox[hidden]{display:none}.ob-h{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.ob-h b{display:block;font:600 15px var(--f-disp)}.ob-h .mono{font-size:11.5px;color:var(--muted);white-space:normal}.ob-h button{min-height:32px;width:32px;padding:0;font-size:18px;line-height:1}
+.ob-l{display:grid;gap:0;max-height:220px;overflow-y:auto;border:1px solid var(--line);border-radius:7px}.ob-l .note{padding:10px}
+.ob-i{display:grid;grid-template-columns:44px minmax(0,1fr);gap:8px;padding:7px 10px;border-bottom:1px solid var(--line);font-size:13px}.ob-i:last-child{border-bottom:0;background:var(--accent-bg)}.ob-i .mono{color:var(--muted)}
+.ob-f{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px;margin:0}.ob-f input[type=date]{width:136px}.ob-f input{min-width:0}
+#obsbox.sheet{left:0!important;right:0;bottom:0;top:auto!important;width:100%;border-radius:14px 14px 0 0;padding:16px max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));z-index:26}
+#obsbox.sheet .ob-f{grid-template-columns:minmax(0,1fr)}#obsbox.sheet .ob-f input[type=date]{width:100%}#obsbox.sheet .ob-l{max-height:40vh}
+.segsel{font-weight:500}.sg-ok{color:var(--ok)}.sg-no{color:var(--muted)}.sg-ag{color:var(--novo)}.sg-vz{color:var(--alerta)}.sgt{font-weight:500}
+.chip.et-ab{background:var(--conf-bg);color:var(--conf)}.chip.et-pr,.chip.et-ch,.chip.et-re,.chip.et-de,.chip.et-en{background:var(--accent-bg);color:var(--accent)}.chip.et-ok{background:var(--ok-bg);color:var(--ok)}
+.seg .note{font-size:11.5px}
+@media(min-width:761px){.tw>table th+th,.tw>table td+td{border-left:1px solid var(--line)}.tw>table thead th{border-bottom:1px solid var(--border-strong,var(--muted))}.tw>table td.stick,.tw>table th.stick{box-shadow:inset -1px 0 0 var(--line)}}
+td.stick>span:first-child{display:inline-block;max-width:15ch;overflow:hidden;text-overflow:ellipsis;vertical-align:middle}th.stick{font-family:var(--f-body)}th.stick,td.stick{padding-right:8px}
+.ckb{all:unset;cursor:pointer;margin-left:6px;vertical-align:middle;font:500 11.5px var(--f-body);color:var(--accent);border:1px solid var(--line);border-radius:5px;padding:2px 7px}.ckb:hover,.ckb:focus-visible{border-color:var(--accent);outline:none}
+.ckpop{border-top-color:var(--accent);width:min(860px,100%)}.ckpop h2{color:var(--fg)}
+.paper{background:#fff;color:#14262f;border:1px solid var(--line);border-radius:4px;padding:22px 24px;display:grid;gap:12px;font-size:12px;color-scheme:light}
+.pp-top{display:flex;justify-content:space-between;gap:12px;border-bottom:2px solid #14262f;padding-bottom:8px}.pp-top span{display:block;color:#5f6e75;font-size:11px}.pp-brand{font:700 22px var(--f-disp);letter-spacing:1px}.pp-code{font:700 17px var(--f-mono)}
+.pp-info{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 14px;border-bottom:1px solid #d3dbde;padding-bottom:10px}.pp-info span{display:block;font-size:9.5px;color:#5f6e75;text-transform:uppercase;letter-spacing:.4px}.pp-info b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pp-ck{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 22px;grid-auto-flow:row}.pp-ck h3{margin:6px 0 2px;font:700 11px var(--f-body);background:#eef2f3;padding:3px 6px;letter-spacing:.4px;text-transform:uppercase}
+.pp-i{display:grid;grid-template-columns:16px minmax(0,1fr) auto;gap:6px;align-items:center;padding:3px 0;border-bottom:1px solid #eef2f3}.pp-i i{width:11px;height:11px;border:1px solid #14262f;font:700 10px/10px var(--f-body);text-align:center;color:#0e6f86;font-style:normal}.pp-i small{color:#5f6e75;font-size:10.5px;white-space:nowrap}.pp-i.ok small{color:#0e6f86}.pp-i.na{color:#8a979d}.pp-i.na i{border-color:#c7d0d4;color:#8a979d}.pp-i em{color:#8a5300;font-style:normal;font-size:10.5px}
+.pp-sec h3{margin:0 0 4px;font:700 11px var(--f-body);letter-spacing:.4px;text-transform:uppercase}.pp-sec p{margin:0 0 2px}.pp-sec{border-top:1px solid #d3dbde;padding-top:8px}.pp-lin{border-bottom:1px solid #d3dbde;height:18px}
+@media(max-width:760px){.paper{padding:14px}.pp-info{grid-template-columns:repeat(2,minmax(0,1fr))}.pp-ck{grid-template-columns:minmax(0,1fr)}.ckb{margin-left:0;min-height:38px;display:inline-flex;align-items:center;padding:0 12px}}
+.lnk{all:unset;cursor:pointer;color:var(--accent);font-size:12.5px;font-weight:600;text-decoration:underline;text-underline-offset:2px}.lnk:focus-visible{outline:2px solid var(--accent)}
+.chip.sg-agc,.chip.et-dg{background:var(--novo-bg);color:var(--novo)}
+#tip{position:fixed;z-index:30;pointer-events:none;background:var(--fg);color:var(--bg);font-size:12.5px;line-height:1.35;padding:6px 9px;border-radius:6px;max-width:260px}
+.vis{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.so-cel,.bnav,.mbrand{display:none}
+@media (hover:none){#tip{display:none}}
+@media(max-width:760px){
+  #app{grid-template-columns:minmax(0,1fr)}
+  .side{position:fixed;inset:0;z-index:18;height:auto;display:none;padding-block:calc(16px + env(safe-area-inset-top,0px)) calc(84px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .side.aberta{display:flex}
+  .brand{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0 8px}.brand span{order:3;width:100%}.brand .so-cel{background:transparent;color:var(--side-fg);border-color:var(--side-mut)}
+  .nav button{min-height:44px;font-size:15px}.foot{margin-top:8px}
+  .so-cel{display:inline-flex;align-items:center;justify-content:center}.so-desk{display:none!important}.mbrand{display:block;font:600 13px var(--f-disp);color:var(--accent)}
+  .main{padding-block:14px calc(88px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));gap:12px}
+  h1{font-size:25px}.sub{font-size:13px}
+  .bnav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:19;background:var(--side);padding:4px max(4px,env(safe-area-inset-right,0px)) calc(4px + env(safe-area-inset-bottom,0px)) max(4px,env(safe-area-inset-left,0px))}
+  .bnav button{background:transparent;border:0;color:var(--side-mut);min-height:52px;padding:0 2px;font:500 11.5px var(--f-body);display:grid;align-content:center;justify-items:center;gap:1px;line-height:1.15}
+  .bnav button b{font:600 15px var(--f-disp);color:var(--side-fg)}.bnav button.on{color:var(--side-fg);box-shadow:inset 0 3px 0 var(--brass)}.bnav button.al b{color:var(--brass)}
+  button,.btn{min-height:44px}input,select,textarea{font-size:16px!important;min-height:44px}
+  .acts>button,.acts>.btn{flex:1 1 auto}.pag button{flex:1}
+  .filters>select,.filters>input:not([type=checkbox]),#q{flex:1 1 100%;width:100%}
+  .fbar{padding:8px}.fbar>select{display:none}.fbar.fo>select{display:block}.fbar>.so-cel{flex:1 1 100%}.fbar .fchip{min-height:36px}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.kpi{min-height:88px;padding:12px;min-width:0}.kpi b{font-size:25px}.kpi b[style]{font-size:18px!important}.kpi:last-child:nth-child(odd){grid-column:1/-1}
+  .box{padding:13px}.grid{gap:10px}.hb button{min-height:42px}.colc{height:140px}
+  .seg{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.seg button{white-space:nowrap;flex:none;min-height:40px}
+  .tw{overflow:visible;background:transparent;border:0;border-radius:0}.box .tw{border-radius:0}
+  table:not(.keep),table:not(.keep) tbody,table:not(.keep) tfoot{display:block;width:100%}
+  table:not(.keep) thead{display:none}
+  table:not(.keep) tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:8px}
+  .box table:not(.keep) tr{background:var(--bg);border-color:var(--line)}
+  table:not(.keep) td{display:block;border:0;padding:0;min-width:0!important;white-space:normal!important;text-align:left!important;background:transparent!important;font-size:14px;overflow-wrap:anywhere}
+  table:not(.keep) td::before{content:attr(data-l);display:block;font:400 11.5px var(--f-body);color:var(--muted);margin-bottom:2px}
+  table:not(.keep) td:first-child{grid-column:1/-1;font-weight:600;font-size:14.5px}
+  table:not(.keep) td:empty{display:none}
+  table:not(.keep) td input:not([type=checkbox]),table:not(.keep) td select,table:not(.keep) .obsb{width:100%!important}
+  table:not(.keep) .obsb{white-space:normal;min-height:44px}
+  table:not(.keep) td input[data-rk=days]{width:84px!important}table:not(.keep) td input[type=checkbox]{width:24px!important;height:24px;min-height:0}
+  .c{width:auto;white-space:normal;overflow-wrap:anywhere}.stick{position:static;font-family:var(--f-mono)}
+  tr.proc td.stick{display:flex!important;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px}tr.proc td.stick::before{width:100%;margin:0}.rowt{min-height:38px;font-family:var(--f-body);font-weight:500}
+  tr.proc td.stick::before{display:none}tr.proc:not(.abr) td:nth-child(n+4){display:none}
+  .bnav button{border-radius:0}.top>.acts:empty{display:none}.top>.acts{width:100%}
+  .filters>select{flex:1 1 42%;width:auto}.fbar>select{flex:1 1 100%}
+  .kpis>.box{padding:12px;gap:4px}.kpis>.box div[style]{font-size:24px!important}.kpis>.box:last-child:nth-child(odd){grid-column:1/-1}
+  .pop .filters{flex-wrap:nowrap;overflow-x:auto;padding-bottom:3px}.pop .filters button{white-space:nowrap}
+  .pop .acts{background:var(--panel);padding-top:8px}
+  table.keep td{overflow-wrap:anywhere}table.keep button{min-height:38px;white-space:nowrap;overflow-wrap:normal}
+  .filters>input.vis{flex:none!important;width:1px!important;min-height:0!important;padding:0;border:0}
+  tbody tr:hover td{background:transparent}
+  .ov{padding:0;align-items:stretch}.pop{width:100%;height:100%;max-height:none;border-radius:0;border-width:4px 0 0;padding-top:calc(16px + env(safe-area-inset-top,0px));padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));align-content:start}.pop .acts{position:sticky;bottom:0}.pop .filters>button{flex:none}
+  #popclose{width:100%}
+}
+@media (prefers-reduced-motion:no-preference){button{transition:border-color .12s,background-color .12s}.hb .t i,.colc i{transition:width .18s,height .18s}}
+</style>
+<div id="app"><p>Carregando…</p></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="navios-data.js"></script>
+<script>
+const STG={pr:'Previsão de Chegada',ch:'Chegada / Presença de Carga',re:'Registrada / Ag. Desembaraço',de:'Desembaraçado',en:'Previsão de Entrega',ok:'Encerrados'};
+const ORI={p:'Pronto no ERP',m:'Buscar no ERP',c:'Calculado',n:'Campo novo',q:'A confirmar'};
+const f=(k,l,o,s,t,a)=>({k,l,o,s,t:t||'t',a:a||[]});
+const F=[
+f('codigo','Código Processo','p','ab','t',['CODIGO','CODIGO DO PROCESSO','PROCESSO','NR PROCESSO','NUMERO DO PROCESSO']),
+f('importador','Importador','p','ab','t',['CLIENTE','NOME DO CLIENTE']),
+f('ref','Ref. Cliente','p','ab','t',['REF CLIENTE','REFERENCIA','REFERENCIA CLIENTE','REF']),
+f('criacao','Data da Criação','p','ab','d',['DATA CRIACAO','CRIACAO','DATA DE CRIACAO','DATA DE ABERTURA','DATA ABERTURA','ABERTURA']),
+f('exportador','Exportador','m','ab','t',['FORNECEDOR']),
+f('pais','País de Procedência','p','ab','t',['PAIS PROCEDENCIA','PAIS DE ORIGEM','PROCEDENCIA']),
+f('seguro','Seguro','n','ab','s',['SEGURO INTERNACIONAL']),
+f('numdata','Data solicitado numerário','m','ab','d',['DATA NUMERARIO','DATA SOLICITACAO NUMERARIO']),
+f('numval','Vlr solicitado numerário','m','ab','m',['VALOR SOLICITADO NUMERARIO','VALOR NUMERARIO','VALOR BRL']),
+f('numrec','Vlr recebido numerário','m','ab','m',['VALOR RECEBIDO NUMERARIO','NUMERARIO RECEBIDO']),
+f('bl','Conhecimento de Embarque','p','pr','t',['CONHECIMENTO DE EMBARQUE','NR BL HAWB','NUMERO BL','BL','HAWB','BL HAWB','CONHECIMENTO']),
+f('bldata','Data BL/HAWB','q','pr','d',['DATA BL HAWB','DATA BL','DATA CONHECIMENTO']),
+f('navio','Navio','n','pr','t',['EMBARCACAO','NOME DO NAVIO']),
+f('porto','Porto/Aeroporto de Embarque','p','pr','t',['PORTO DE EMBARQUE','AEROPORTO DE EMBARQUE','PORTO AEROPORTO DE EMBARQUE','LOCAL DE EMBARQUE','ORIGEM']),
+f('etd','ETD','p','pr','d',['DATA ETD','PREVISAO DE EMBARQUE']),
+f('eta','Previsão de Chegada','p','pr','d',['ETA','DATA ETA','PREVISAO DE CHEGADA']),
+f('transit','Transit time','c','pr'),
+f('dest','Data destinação','n','pr','d',['DATA DESTINACAO','DESTINACAO']),
+f('armazem','Armazém/Recinto','p','pr','t',['ARMAZEM RECINTO','ARMAZEM','ARMAZEM/RECINTO','RECINTO','RECINTO ALFANDEGADO']),
+f('lcl','LCL/FCL','n','pr','l',['LCL FCL','TIPO DE CARGA']),
+f('cont','Container','n','pr','t',['CONTAINERS','CONTEINER','NR CONTAINER']),
+f('chegada','Chegada','p','ch','d',['DATA CHEGADA','DATA DE CHEGADA']),
+f('presenca','Presença de Carga','p','ch','d',['PRESENCA','DATA PRESENCA']),
+f('siscarga','Siscarga','m','ch','t',['SITUACAO SISCARGA','SITUACOES DO FRETE','SITUACAO DO FRETE']),
+f('entrada','Entrada armazém','n','ch','d',['ENTRADA ARMAZEM','DATA ENTRADA ARMAZEM']),
+f('mapa','MAPA','p','ch','d',['DATA MAPA']),
+f('registro','Data Registro','p','re','d',['DATA DE REGISTRO','REGISTRO','DATA REGISTRO DUIMP']),
+f('duimp','Nr. DUIMP','p','re','t',['DUIMP','NUMERO DUIMP','NR DI DUIMP','DI DUIMP']),
+f('canal','Canal','p','re','t',['CANAL RFB']),
+f('icms','ICMS/exoneração','m','re','d',['ICMS','ICMS EXONERACAO','EXONERACAO']),
+f('desemb','Data Desembaraço','p','de','d',['DATA DE DESEMBARACO','DESEMBARACO']),
+f('transp','Transportadora','p','de','t',['TRANSPORTADOR','TRANSPORTADOR LOCAL']),
+f('pgarm','Pgto armazenagem','m','de','t',['PAGAMENTO ARMAZENAGEM']),
+f('vcarm','Vencto armazenagem','m','de','d',['VENCIMENTO ARMAZENAGEM']),
+f('nfe','NF-e','n','de','d',['NFE','NOTA FISCAL','DATA NF E']),
+f('agend','Entrega agendada / Carregamento','n','en','d',['ENTREGA AGENDADA','DATA AGENDAMENTO','AGENDAMENTO','CARREGAMENTO','DATA CARREGAMENTO']),
+f('entrega','Data Entrega','p','en','d',['ENTREGA','DATA DE ENTREGA']),
+f('fatura','Data Faturamento','n','ok','d',['DATA FATURAMENTO','FATURAMENTO','DATA DE FATURAMENTO','FATURADO EM']),
+f('encerr','Data Encerramento','n','ok','d',['DATA ENCERRAMENTO','ENCERRAMENTO','DATA DE ENCERRAMENTO','DATA BAIXA','BAIXA']),
+f('pend','Última Pendência','p','en','t',['ULTIMA PENDENCIA']),
+f('obs','Observação','n','en','x',['OBSERVACOES','OBS']),
+f('modal','Modal','n','pr','o',['VIA DE TRANSPORTE','VIA TRANSPORTE','TIPO DE TRANSPORTE']),
+f('status','Status Atual','n','pr','t',['STATUS','SITUACAO ATUAL','SITUACAO']),
+];
+const FC=[
+f('descarga','Data de descarga','n','ct','d',['DESCARGA','DATA DESCARGA']),
+f('inicio','Início do free time','n','ct','d'),
+f('free','Free time (dias)','n','ct','t',['FREE TIME','FREETIME']),
+f('venc','Vencimento demurrage','c','ct'),
+f('devol','Devolução container','n','ct','d',['DEVOLUCAO','DATA DEVOLUCAO','DEVOLUCAO CONTAINER']),
+f('incid','Dias incidência demurrage','c','ct'),
+f('tarifa','Tarifa/dia','n','ct','t',['TARIFA','TARIFA DIA']),
+f('termo','Termo de container','n','ct','t',['TERMO CONTAINER']),
+f('dias','Dias de demurrage','c','ct'),
+f('acum','Demurrage acumulada','c','ct'),
+];
+const EXTRA=f('analista','Analista responsável','p','x','t',['ANALISTA','RESPONSAVEL','ANALISTA RESPONSAVEL']);
+const IMPF=[...F,EXTRA,...FC.filter(x=>x.o!=='c'&&x.k!=='inicio')];
+const SEG=['','Aguardando liberação','Sim','Não'],LCL=['','LCL','FCL'],MODAIS=['Marítimo','Aéreo','Rodoviário'];
+const BASEC=['codigo','importador','ref','exportador','bl','navio','porto'],DATASC=['chegada','presenca','registro','duimp','canal'];
+const COLS={pr:[...BASEC,'eta','pais','seguro','transp','obs','pend','modal','status'],
+ch:[...BASEC,'chegada','presenca','pais','armazem','seguro','transp','obs','pend','modal','status'],
+re:[...BASEC,...DATASC,'pais','armazem','seguro','transp','obs','pend','modal','status'],
+de:[...BASEC,...DATASC,'desemb','pais','armazem','seguro','transp','agend','obs','pend','modal','status'],
+en:[...BASEC,...DATASC,'desemb','pais','armazem','seguro','transp','agend','entrega','obs','pend','modal','status'],
+ok:['codigo','importador','ref','exportador','bl','eta','chegada','registro','duimp','desemb','entrega','fatura','encerr','__fim','analista','obs','modal','status']};
+const REGRA={ok:'Processos entregues, faturados ou encerrados. Não aparecem nas abas de etapa.',pr:'Entram com a Previsão de Chegada (ETA). Saem quando a Chegada é preenchida.',ch:'Entram com a Chegada. Saem quando a Data Registro é preenchida.',re:'Entram com a Data Registro. Saem quando a Data Desembaraço é preenchida.',de:'Entram com a Data Desembaraço. Saem quando a entrega é agendada ou o carregamento é informado.',en:'Entram com a entrega agendada ou o carregamento. Saem quando a Data Entrega é preenchida.'};
+const fimMot=r=>isISO(val(r,'encerr'))?'Encerrado':isISO(val(r,'fatura'))?'Faturado':isISO(val(r,'entrega'))?'Entregue':'';
+const CHAIN=['chegada','registro','desemb','agend','entrega'],NEXT={pr:'chegada',ch:'registro',re:'desemb'};
+const KEY='follow-up-operacional-v1',PAGE=50;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm=s=>String(s??'').normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().replace(/[^A-Z0-9]+/g,' ').trim();
+const pad=n=>String(n).padStart(2,'0');
+const hoje=()=>{const t=new Date();return t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate())};
+const isISO=s=>/^\d{4}-\d{2}-\d{2}$/.test(String(s||''));
+const utc=s=>{const[a,m,d]=s.split('-').map(Number);return Date.UTC(a,m-1,d)};
+const add=(s,n)=>new Date(utc(s)+n*864e5).toISOString().slice(0,10);
+const dif=(a,b)=>Math.round((utc(a)-utc(b))/864e5);
+const br=s=>{if(!isISO(s))return s||'';const[a,m,d]=s.split('-');return d+'/'+m+'/'+a};
+const num=v=>{if(typeof v==='number')return v;let s=String(v??'').replace(/[^\d,.-]/g,'');if(!s)return NaN;if(s.includes(','))s=s.replace(/\./g,'').replace(',','.');return Number(s)};
+const usd=n=>'USD '+n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+function toDate(v){
+  if(v===''||v==null)return'';
+  if(typeof v==='number'&&window.XLSX){const c=XLSX.SSF.parse_date_code(v);if(c&&c.y>1900)return c.y+'-'+pad(c.m)+'-'+pad(c.d);return String(v)}
+  const s=String(v).trim();let m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})/);
+  if(m)return m[3]+'-'+pad(+m[2])+'-'+pad(+m[1]);
+  m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return m[1]+'-'+m[2]+'-'+m[3];return s}
+function toVal(fd,v){
+  if(fd.t==='d')return toDate(v);
+  if(v===''||v==null)return'';
+  if(fd.t==='m'&&typeof v==='number')return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if(fd.t==='o'){const n=norm(v);if(n.startsWith('MAR')||n==='M')return'Marítimo';if(n.startsWith('AER')||n==='A')return'Aéreo';if(n.startsWith('ROD')||n==='R')return'Rodoviário';return String(v).trim()}
+  if(fd.t==='s'){const n=norm(v);if(n==='SIM'||n==='S'||n==='X')return'Sim';if(n==='NAO'||n==='N')return'Não';if(n.startsWith('AGUARD'))return'Aguardando liberação';return''}
+  return String(v).trim()}
+let sampleCache=null;
+function gerarExemplo(){if(sampleCache)return sampleCache;const o=n=>add(hoje(),n),rows=[],manual={};let seed=7;const rnd=n=>{seed=(Math.imul(seed,1664525)+1013904223)|0;return (seed>>>16)%n};
+  const CL=['Cliente Alfa','Cliente Beta','Cliente Gama','Cliente Delta','Cliente Épsilon','Cliente Zeta','Cliente Ômega'],AN=['Analista A','Analista B','Analista C','Analista D'],PA=['China','Itália','Alemanha','Índia','Estados Unidos'],PO=['Porto Exemplo A','Porto Exemplo B','Porto Exemplo C'],RE=['Recinto Exemplo 1','Recinto Exemplo 2'],CN=['Verde','Verde','Verde','Verde','Verde','Amarelo','Vermelho'];
+  const PLANO=['ab','ab','ab','ab','pr','pr','pr','pr','pr','pr','pr','pr','pr','pr','ch','ch','ch','ch','ch','re','re','re','re','de','de','de','de','de','de','en','en','en','en','ok','ok','ok','ok','ok','ok','ok'];
+  PLANO.forEach((st,i)=>{const n=i+1,code='MI-26/'+String(n).padStart(4,'0'),cl=CL[rnd(CL.length)],an=AN[rnd(AN.length)],vl=18000+rnd(40)*1000,r={codigo:code,importador:cl,ref:String(n).padStart(4,'0')+'-'+(10+rnd(80)),exportador:'Fornecedor '+(1+rnd(9)),pais:PA[rnd(PA.length)],analista:an},m={lcl:rnd(4)?'FCL':'LCL',navio:'NAVIO EXEMPLO',seguro:rnd(2)?'Sim':'Não'};
+    let base;if(st==='ab'){base=20+rnd(15);r.pend='Conferir documentos';r.criacao=o(-(i+1));if(i===2){r.numdata=o(-1);r.numval='R$ '+vl.toLocaleString('pt-BR')+',00'}delete m.navio;m.modal=i?'Marítimo':'Aéreo';rows.push(r);manual[code]=m;return}
+    base={pr:2+rnd(42),ch:-(1+rnd(2)),re:-(4+rnd(6)),de:-(6+rnd(3)),en:-(10+rnd(4)),ok:-(18+rnd(34))}[st];
+    if(st==='pr'&&i%4===0)base=-(1+rnd(2));
+    r.criacao=o(base-48-rnd(6));r.bl='BL'+String(1000+n);r.bldata=o(base-34);r.porto=PO[rnd(PO.length)];r.etd=o(base-(30+rnd(16)));r.eta=o(base);r.armazem=RE[rnd(RE.length)];r.numdata=o(base-14-rnd(8));r.numval='R$ '+vl.toLocaleString('pt-BR')+',00';
+    if(st!=='pr'||i%3)r.numrec=r.numval;
+    if(base>5||st!=='pr'||i%2)m.dest=o(Math.min(base-6,-1));
+    if(st==='pr'&&base<=3&&i%2)m.seguro=i%4===1?'Aguardando liberação':'Sim';
+    const conts=rnd(3)===0?['CONT'+(1000+n)+'A','CONT'+(1000+n)+'B']:['CONT'+(1000+n)+'A'];m.cont=conts.join(' / ');
+    if(st!=='pr'){r.chegada=o(base);r.presenca=o(base+1);r.siscarga='Liberado';m.entrada=o(base+2);m.__ct={};conts.forEach((c,j)=>{m.__ct[c]={descarga:o(base),free:'10',tarifa:String(150+rnd(4)*50),termo:'Anual'};if(st==='ok'||(st==='de'&&j===0&&i%2))m.__ct[c].devol=o(Math.min(base+8+rnd(6),-1))});r.pend='Registrar DUIMP'}
+    if(st==='ch'&&i%3===0)m.seguro='';
+    if(['re','de','en','ok'].includes(st)){r.registro=o(base+2+rnd(2));r.duimp='26BR0000000'+String(1000+n);r.canal=CN[rnd(CN.length)];r.mapa=o(base+2);if(rnd(8))r.icms=o(base+3);r.pend='Aguardar desembaraço'}
+    if(['de','en','ok'].includes(st)){r.desemb=o(base+4+rnd(3));r.transp='Transportadora Exemplo';r.vcarm=o(base+12+rnd(12));if(rnd(3))r.pgarm='Pago';if(rnd(6))m.nfe=o(base+6);r.pend='Agendar retirada'}
+    if(st==='en'||st==='ok'){m.agend=st==='en'?o(rnd(4)):o(base+7);r.icms=r.icms||o(base+3);m.nfe=m.nfe||o(base+6);r.pend='Acompanhar entrega'}
+    if(st==='ok'){r.entrega=o(base+8+rnd(5));if(i%3===0)r.fatura=o(base+12);if(i%5===0)r.encerr=o(base+14);r.pend='Encerrar processo'}
+    m.modal=i%7===3?'Aéreo':i%11===5?'Rodoviário':'Marítimo';
+    if(m.modal!=='Marítimo'){delete m.navio;delete m.lcl;delete m.cont;delete m.__ct;r.porto=m.modal==='Aéreo'?'Aeroporto Exemplo':'Fronteira Exemplo';r.bl=(m.modal==='Aéreo'?'AWB':'CRT')+String(1000+n)}
+    if(i%3===0)m.__obs=[{d:o(-9),t:'Ag. documentos do exportador'},{d:o(-3),t:'Ag. resposta do cliente'}];else if(i%4===1)m.__obs=[{d:o(-2),t:'Ag. confirmação do armador'}];
+    rows.push(r);manual[code]=m});
+  sampleCache={rows,manual};return sampleCache}
+function sample(){return JSON.parse(JSON.stringify(gerarExemplo().rows))}
+function sampleManual(){return JSON.parse(JSON.stringify(gerarExemplo().manual))}
+const NAVBASE=Array.isArray(window.NAVIOS_BASE)?window.NAVIOS_BASE:[],NAVSET=new Set(NAVBASE);let navKeys=new Map();
+const navIndex=()=>{navKeys=new Map(S.navios.map(n=>[norm(n),n]))};
+const S={v:'geral',src:null,rows:sample(),manual:sampleManual(),log:[],q:'',an:'',ca:'',pe:false,pg:0,map:null,mo:'',msg:'',err:'',clear:false,noticeOff:false,stored:true,dgf:false,sit:'',ck:null,dc:{num:true,campos:['importador','exportador','ref','bl','porto','eta','modal','navio']},menu:false,open:{},mf:'',ts:null,undo:null,fo:false,pop:true,rc:{},pf:'',df:{st:'',ca:'',an:'',im:'',ti:'',per:'',mo:''},rp:'etapas',rs:null,navios:[...NAVBASE],navDel:[],navPend:null,nq:'',nerr:''};
+function save(){if(!S.src&&!S.log.length)return;try{localStorage.setItem(KEY,JSON.stringify({src:S.src,rows:S.rows,manual:S.manual,sv:5,dc:S.dc,log:S.log,rc:S.rc,navExtra:S.navios.filter(n=>!NAVSET.has(n)),navDel:S.navDel}));S.stored=true}catch(e){S.stored=false}}
+try{const j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.rows)){if(j.src||j.sv===5){S.src=j.src||null;S.rows=j.rows;S.manual=j.manual||{};S.log=j.log||[]}S.rc=j.rc||{};if(j.dc&&Array.isArray(j.dc.campos))S.dc=j.dc;const antigos=Array.isArray(j.navios)?j.navios.filter(n=>!/^NAVIO EXEMPLO/.test(n)):[];S.navDel=Array.isArray(j.navDel)?j.navDel:[];const del=new Set(S.navDel);S.navios=[...NAVBASE,...(Array.isArray(j.navExtra)?j.navExtra:[]),...antigos].filter(n=>!del.has(n));const vis=new Set();S.navios=S.navios.filter(n=>{const k=norm(n);if(vis.has(k))return false;vis.add(k);return true}).sort((a,b)=>a<b?-1:a>b?1:0)}}catch(e){}
+navIndex();
+const app=document.getElementById('app');
+const M=r=>S.manual[r.codigo]||(S.manual[r.codigo]={});
+function digData(r){const m=S.manual[r.codigo]||{};if(m.__dig)return m.__dig.d;if(S.dc.num&&isISO(val(r,'numdata')))return val(r,'numdata');return''}
+function digitado(r){const m=S.manual[r.codigo]||{};if(m.__dig)return true;if(S.dc.num&&val(r,'numdata'))return true;return['chegada','registro','desemb','agend','entrega'].some(k=>isISO(val(r,k)))}
+function faltam(r){return S.dc.campos.filter(k=>{if(k==='navio'&&val(r,'modal')&&val(r,'modal')!=='Marítimo')return false;return val(r,k)===''}).map(k=>(F.find(x=>x.k===k)||{l:k}).l)}
+function digCel(r){const m=S.manual[r.codigo]||{};if(digitado(r)){const d=digData(r),como=m.__dig?'Marcado':S.dc.num&&val(r,'numdata')?'Numerário solicitado':'Processo avançou';return `<td style="white-space:nowrap"><span class="chip grn">Digitado</span> <span class="note" style="display:inline">${como}${d?' em '+br(d).slice(0,5):''}</span>${m.__dig?` <button class="lnk" data-a="undig" data-x="${esc(r.codigo)}">Desmarcar</button>`:''}</td>`}const f=faltam(r);return `<td style="min-width:230px"><span class="chip sg-agc">Aguardando</span>${f.length?` <span class="note" style="display:inline">Faltam: ${esc(f.join(', '))}</span>`:' <span class="note" style="display:inline">Campos completos</span>'}<div style="margin-top:4px"><button class="lnk" data-a="dig" data-x="${esc(r.codigo)}">Marcar como digitado</button></div></td>`}
+function digRegras(){const pode=['importador','exportador','ref','bl','porto','eta','modal','navio','pais','armazem','transp','seguro','criacao'];return `<section class="box"><div class="head"><h2>Quando o processo conta como digitado</h2></div><p class="note">O processo também conta como digitado quando alguém marca "Marcar como digitado" ou quando já avançou de etapa.</p><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="dcnum" data-dc="num" style="min-height:0;width:auto"${S.dc.num?' checked':''}> Numerário solicitado indica processo digitado</label><div><p class="note" style="margin-bottom:6px">Campos mínimos, mostrados como "Faltam" enquanto vazios. Navio só vale para o marítimo.</p><div class="filters">${pode.map(k=>{const fd=F.find(x=>x.k===k);return `<label class="btn" style="display:inline-flex;gap:6px;align-items:center;font-weight:400"><input type="checkbox" id="dcf_${k}" data-dcf="${k}" style="min-height:0;width:auto"${S.dc.campos.includes(k)?' checked':''}> ${esc(fd.l)}</label>`}).join('')}</div></div></section>`}
+function notas(r){const m=S.manual[r.codigo]||{},imp=r.obs?[{d:'',t:String(r.obs)}]:[],lg=m.obs&&!r.obs?[{d:'',t:String(m.obs)}]:[];return[...imp,...lg,...(m.__obs||[])]}
+const val=(r,k)=>{if(k==='obs'){const n=notas(r);return n.length?n[n.length-1].t:''}if(k==='transit'){const a=val(r,'eta'),b=val(r,'etd');return isISO(a)&&isISO(b)?dif(a,b)+' dias':''}if(r[k]!==undefined&&r[k]!=='')return r[k];const m=S.manual[r.codigo];return m&&m[k]!==undefined?m[k]:''};
+function stage(r){const h=k=>isISO(val(r,k));if(h('encerr')||h('fatura')||h('entrega'))return'ok';if(h('agend'))return'en';if(h('desemb'))return'de';if(h('registro'))return're';if(h('chegada'))return'ch';if(h('eta'))return'pr';return digitado(r)?'ab':'dg'}
+const conts=r=>String(val(r,'cont')).split(/[\/;,]+/).map(s=>s.trim()).filter(Boolean);
+function ct(r,n){const m=(S.manual[r.codigo]||{}).__ct||{},c=m[n]||{},g=k=>c[k]!==undefined?c[k]:val(r,k);
+  const de=g('descarga'),auto=isISO(de)?add(de,1):'',ini=c.inicio||auto,frRaw=g('free'),fr=num(frRaw),tar=num(g('tarifa')),dv=g('devol');let venc='',dias=null,tot=null;
+  if(isISO(ini)&&Number.isFinite(fr)){venc=add(ini,Math.round(fr)-1);const fim=isISO(dv)?dv:hoje();dias=Math.max(0,dif(fim,venc));if(Number.isFinite(tar))tot=dias*tar}
+  return{de,auto,ini,alt:!!c.inicio&&c.inicio!==auto,fr:frRaw,tar:g('tarifa'),termo:g('termo'),dv,venc,dias,tot}}
+const RULES=[
+{id:'seguro',t:'Seguro',l:'Seguro pendente na chegada',q:'Dias antes da chegada',days:0,u:2,o:'definida'},
+{id:'dest',t:'Destinação',l:'Destinação sem data antes da chegada',q:'Dias antes da chegada',days:5,u:2,o:'definida'},
+{id:'chegada',t:'Chegada',l:'ETA passou e a chegada não foi lançada',q:'Dias após o ETA',days:1,u:1},
+{id:'numsol',t:'Numerário',l:'Numerário não solicitado antes da chegada',q:'Dias antes do ETA',days:10,u:1},
+{id:'numrec',t:'Numerário',l:'Numerário solicitado e não recebido',q:'Dias após a solicitação',days:3,u:1},
+{id:'descarga',t:'Container',l:'Carga chegou e o container está sem descarga',q:'Dias após a chegada',days:1,u:1},
+{id:'contdados',t:'Container',l:'Container sem free time ou tarifa',q:'Dias após a descarga',days:0,u:1},
+{id:'registro',t:'Registro',l:'Presença de carga sem registro da DUIMP',q:'Dias após a presença',days:2,u:1},
+{id:'icms',t:'ICMS',l:'Registrada sem ICMS/exoneração',q:'Dias após o registro',days:1,u:1},
+{id:'canal',t:'Canal',l:'Canal amarelo, vermelho ou cinza sem desembaraço',q:'Dias após o registro',days:0,u:2},
+{id:'nfe',t:'NF-e',l:'Desembaraçada sem NF-e',q:'Dias após o desembaraço',days:1,u:1},
+{id:'entrega',t:'Entrega',l:'Desembaraçada sem entrega agendada ou carregamento',q:'Dias após o desembaraço',days:3,u:1},
+{id:'arm',t:'Armazenagem',l:'Armazenagem perto do vencimento sem pagamento',q:'Dias antes do vencimento',days:3,u:2},
+{id:'venc',t:'Free time',l:'Free time perto do vencimento sem devolução',q:'Dias antes do vencimento',days:3,u:2},
+{id:'dem',t:'Demurrage',l:'Free time vencido sem devolução',q:'Dias após o vencimento',days:0,u:2},
+{id:'dig',t:'Digitação',l:'Processo aberto sem digitação',q:'Dias após a criação',days:2,u:1},
+{id:'resp',t:'Responsável',l:'Processo sem responsável',q:'',days:null,u:1},
+];
+const rc=id=>{const d=RULES.find(x=>x.id===id),c=S.rc[id]||{};return{on:c.on!==false,days:Number.isFinite(c.days)?c.days:d.days}};
+function alerts(){const A=[],t=hoje(),temResp=S.rows.some(r=>val(r,'analista'));
+  const P=(id,r,d,x)=>{const c=RULES.find(y=>y.id===id);A.push({id,r,d,t:c.t,u:c.u,...x})},on=id=>rc(id).on,D=id=>rc(id).days,dia=n=>n===1?'1 dia':n+' dias';
+  S.rows.forEach(r=>{const st=stage(r),v=k=>val(r,k),eta=v('eta'),che=v('chegada'),ref=che||eta,fim=st==='ok',desp=['de','en','ok'].includes(st);
+    if(!fim&&isISO(ref)){const seg=v('seguro');if(on('seguro')&&(seg===''||seg==='Aguardando liberação')&&dif(ref,t)<=D('seguro'))P('seguro',r,(seg?'Aguardando liberação.':'Não verificado.')+' A carga não pode carregar.',{fk:'seguro'});
+      if(on('dest')&&!v('dest')&&['dg','ab','pr','ch'].includes(st)&&dif(ref,t)<=D('dest')){const n=dif(ref,t);P('dest',r,n>=0?'Sem data de destinação a '+dia(n)+' da chegada.':'Sem data de destinação após a chegada.',{fk:'dest'})}}
+    if(on('chegada')&&st==='pr'&&isISO(eta)&&dif(t,eta)>=D('chegada'))P('chegada',r,'ETA passou há '+dia(dif(t,eta))+' e a chegada não foi lançada.',{fk:'chegada'});
+    if(on('numsol')&&['dg','ab','pr'].includes(st)&&!v('numdata')&&isISO(eta)&&dif(eta,t)<=D('numsol'))P('numsol',r,'Numerário não solicitado. ETA em '+br(eta)+'.',{fk:'numdata'});
+    if(on('numrec')&&!desp&&isISO(v('numdata'))&&!v('numrec')&&dif(t,v('numdata'))>=D('numrec'))P('numrec',r,'Solicitado há '+dia(dif(t,v('numdata')))+' e ainda não recebido.',{fk:'numrec'});
+    const pre=v('presenca')||che;if(on('registro')&&st==='ch'&&isISO(pre)&&dif(t,pre)>=D('registro'))P('registro',r,'Presença há '+dia(dif(t,pre))+' e sem registro da DUIMP.',{fk:'registro'});
+    const reg=v('registro');if(on('icms')&&['re','de','en'].includes(st)&&isISO(reg)&&!v('icms')&&dif(t,reg)>=D('icms'))P('icms',r,'Registrada há '+dia(dif(t,reg))+' sem ICMS/exoneração.',{fk:'icms'});
+    if(on('canal')&&st==='re'&&['AMARELO','VERMELHO','CINZA'].includes(norm(v('canal')))&&(!isISO(reg)||dif(t,reg)>=D('canal')))P('canal',r,'Canal '+v('canal').toLowerCase()+' aguardando desembaraço.',{fk:'desemb'});
+    const des=v('desemb');if((st==='de'||st==='en')&&isISO(des)){if(on('nfe')&&!v('nfe')&&dif(t,des)>=D('nfe'))P('nfe',r,'Desembaraçada há '+dia(dif(t,des))+' sem NF-e.',{fk:'nfe'});if(on('entrega')&&st==='de'&&dif(t,des)>=D('entrega'))P('entrega',r,'Desembaraçada há '+dia(dif(t,des))+' sem entrega agendada ou carregamento.',{fk:'agend'})}
+    const va=v('vcarm');if(on('arm')&&!fim&&isISO(va)&&!v('pgarm')&&dif(va,t)<=D('arm')){const n=dif(va,t);P('arm',r,n>=0?'Armazenagem vence em '+dia(n)+' sem pagamento.':'Armazenagem vencida há '+dia(-n)+' sem pagamento.',{fk:'pgarm'})}
+    const cri=v('criacao');if(on('dig')&&!fim&&!digitado(r)&&isISO(cri)&&dif(t,cri)>=D('dig')){const f=faltam(r);P('dig',r,'Aberto há '+dia(dif(t,cri))+' e ainda não digitado'+(f.length?'. Faltam: '+f.join(', '):'')+'.',{dg:1})}
+    if(on('resp')&&temResp&&!fim&&!v('analista'))P('resp',r,'Processo sem responsável definido.',{});
+    conts(r).forEach(n=>{const c=ct(r,n),ab=!isISO(c.dv);
+      if(on('descarga')&&!fim&&isISO(che)&&!isISO(c.de)&&dif(t,che)>=D('descarga'))P('descarga',r,n+': sem data de descarga.',{n,ck:'descarga'});
+      if(on('contdados')&&ab&&isISO(c.de)&&dif(t,c.de)>=D('contdados')){if(!Number.isFinite(num(c.fr)))P('contdados',r,n+': sem free time.',{n,ck:'free'});else if(!Number.isFinite(num(c.tar)))P('contdados',r,n+': sem tarifa por dia.',{n,ck:'tarifa'})}
+      if(on('venc')&&ab&&c.venc){const f=dif(c.venc,t);if(f>=0&&f<=D('venc'))P('venc',r,n+': free time vence '+(f===0?'hoje':'em '+dia(f))+'.',{n,ck:'devol'})}
+      if(on('dem')&&ab&&c.dias>0&&c.dias>=D('dem'))P('dem',r,n+': '+(c.dias===1?'1 dia excedente':c.dias+' dias excedentes')+(c.tot!==null?', '+usd(c.tot)+' até hoje':'')+'. Sem devolução.',{n,ck:'devol'})})});
+  return A.sort((a,b)=>b.u-a.u)}
+function regras(){const A=alerts();return `<section class="box"><div class="head"><h2>Regras de alerta</h2><span class="note">Alterações valem na hora e ficam no Histórico</span></div><p class="note">Seguro e Destinação seguem o que foi definido. Os demais prazos são sugestões para a equipe validar.</p><div class="tw"><table><thead><tr><th>Ativa</th><th>Alerta</th><th>Prazo</th><th>Prioridade</th><th>Hoje</th><th>Origem</th></tr></thead><tbody>${RULES.map(x=>{const c=rc(x.id);return `<tr><td><input type="checkbox" id="ron_${x.id}" data-rid="${x.id}" data-rk="on" aria-label="Ativar: ${esc(x.l)}" style="min-height:0;width:auto"${c.on?' checked':''}></td><td style="min-width:260px">${esc(x.l)}</td><td style="white-space:nowrap">${x.days===null?'<span class="empty">Sem prazo</span>':`<input class="sm" style="width:60px" id="rdy_${x.id}" type="number" min="0" step="1" data-rid="${x.id}" data-rk="days" value="${c.days}" aria-label="${esc(x.q)}"> <span class="note">${esc(x.q.charAt(0).toLowerCase()+x.q.slice(1))}</span>`}</td><td><span class="chip ${x.u===2?'red':'o-n'}">${x.u===2?'Urgente':'Atenção'}</span></td><td class="mono">${A.filter(a=>a.id===x.id).length}</td><td style="color:var(--muted)">${x.o==='definida'?'Definida':'Sugestão'}</td></tr>`}).join('')}</tbody></table></div></section>`}
+function filtered(st){const q=norm(S.q),al=S.pe?new Set(alerts().map(a=>a.r.codigo)):null;return S.rows.filter(r=>(!st||stage(r)===st)&&(st||!S.sit||(S.sit==='and'?stage(r)!=='ok':stage(r)==='ok'))&&(!S.dgf||!digitado(r))&&(!S.mf||(val(r,'modal')||'Não informado')===S.mf)&&(!S.an||val(r,'analista')===S.an)&&(!S.ca||val(r,'canal')===S.ca)&&(!al||al.has(r.codigo))&&(!q||norm([val(r,'codigo'),val(r,'importador'),val(r,'ref'),val(r,'exportador'),val(r,'duimp'),val(r,'bl')].join(' ')).includes(q)))}
+const uniq=k=>[...new Set(S.rows.map(r=>val(r,k)).filter(Boolean))].sort();
+const TIT={geral:['Painel','Selecione um item nos gráficos para filtrar. Todos os números acompanham.'],rel:['Relatórios','Escolha um relatório, aplique os filtros e copie a tabela para o Excel.'],todos:['Processos Aduana','Visão geral de todos os processos e campos.'],cont:['Container e Demurrage','Contagem por container, a partir da descarga ou do marco do contrato.'],regras:['Regras de alerta','Ative, desative e ajuste os prazos de cada alerta.'],nav:['Navios','Cadastro usado na lista suspensa da coluna Navio.'],hist:['Histórico','Quem alterou o quê, quando e o valor anterior.'],mapa:['Mapa de Campos','Origem de cada campo do Follow-Up.'],imp:['Importar planilha','Traga os dados exportados do ERP.']};
+const LAB={dg:'Aguardando digitação',ab:'Digitado, sem ETA',pr:'Previsão de chegada',ch:'Chegada/presença',re:'Registrada',de:'Desembaraçado',en:'Previsão de entrega',ok:'Encerrado'};
+const dias=n=>Number.isFinite(n)?n.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}):'—';
+const media=l=>{const v=l.filter(Number.isFinite);return v.length?v.reduce((a,b)=>a+b,0)/v.length:NaN};
+const entre=(r,a,b)=>{const x=val(r,a),y=val(r,b);if(!isISO(x)||!isISO(y))return NaN;const d=dif(y,x);return d>=0?d:NaN};
+const dfNovo=()=>({st:'',ca:'',an:'',im:'',ti:'',per:'',mo:''});
+const segunda=()=>{const t=hoje(),w=new Date(utc(t)).getUTCDay();return add(t,-((w+6)%7))};
+const semana=e=>Math.floor(dif(e,segunda())/7);
+function noPeriodo(r,p){if(!p)return true;const e=val(r,'eta');if(!isISO(e))return false;const n=dif(e,hoje());if(p==='n7')return n>=0&&n<=7;if(p==='n30')return n>=0&&n<=30;if(p==='u30')return n<0&&n>=-30;if(p[0]==='w')return semana(e)===Number(p.slice(1));return true}
+function recorte(A,sem){const d=S.df,cod=d.ti&&sem!=='ti'?new Set(A.filter(a=>a.t===d.ti).map(a=>a.r.codigo)):null;return S.rows.filter(r=>(sem==='st'||!d.st||stage(r)===d.st)&&(sem==='ca'||!d.ca||(val(r,'canal')||'Não informado')===d.ca)&&(sem==='an'||!d.an||(val(r,'analista')||'Sem responsável')===d.an)&&(sem==='im'||!d.im||val(r,'importador')===d.im)&&(sem==='per'||noPeriodo(r,d.per))&&(sem==='mo'||!d.mo||(val(r,'modal')||'Não informado')===d.mo)&&(!cod||cod.has(r.codigo)))}
+function hbar(k,itens,fmt){const max=Math.max(1,...itens.map(x=>x.v)),on=S.df[k];return `<div class="hb${on?' tem':''}">${itens.map(x=>{const t=x.tip||`${x.l}: ${x.v}`;return `<button data-a="df" data-k="${k}" data-x="${esc(x.x??x.l)}" data-tip="${esc(t)}" aria-pressed="${on===(x.x??x.l)}" class="${on===(x.x??x.l)?'sel':''}"><span class="l">${esc(x.l)}</span><span class="t"><i style="width:${x.v?Math.max(1,Math.round(x.v/max*100)):0}%"></i></span><span class="v">${fmt?fmt(x.v):x.v}</span></button>`}).join('')||'<span class="note">Sem dados neste filtro.</span>'}</div>`}
+function contar(rows,fn){const m=new Map();rows.forEach(r=>{const k=fn(r);if(k)m.set(k,(m.get(k)||0)+1)});return[...m.entries()].map(([l,v])=>({l,v})).sort((a,b)=>b.v-a.v)}
+function barraFiltros(){const d=S.df,im=uniq('importador'),an=uniq('analista'),ca=[...new Set(S.rows.map(r=>val(r,'canal')||'Não informado'))].sort(),sel=(id,k,lab,ops)=>`<label class="vis" for="${id}">${lab}</label><select id="${id}" data-df="${k}"><option value="">${lab}</option>${ops.map(o=>{const[v,t]=Array.isArray(o)?o:[o,o];return `<option value="${esc(v)}"${d[k]===v?' selected':''}>${esc(t)}</option>`}).join('')}</select>`;
+  const nomes={mo:x=>'Modal: '+x,st:x=>LAB[x],ca:x=>'Canal: '+x,an:x=>x,im:x=>x,ti:x=>'Pendência: '+x,per:x=>({n7:'ETA em 7 dias',n30:'ETA em 30 dias',u30:'ETA nos últimos 30 dias'}[x]||'Semana selecionada')};
+  const ativos=Object.keys(d).filter(k=>d[k]);
+  return `<div class="fbar filters${S.fo?' fo':''}"><button class="so-cel" data-a="fo" aria-expanded="${S.fo}">${S.fo?'Ocultar filtros':'Mostrar filtros'}${ativos.length?' ('+ativos.length+')':''}</button>${sel('dfst','st','Todas as etapas',Object.keys(LAB).map(k=>[k,LAB[k]]))}${sel('dfim','im','Todos os importadores',im)}${sel('dfan','an','Todos os responsáveis',an)}${sel('dfca','ca','Todos os canais',ca)}${sel('dfmo','mo','Todos os modais',[...MODAIS,'Não informado'])}${sel('dfpe','per','Qualquer período',[['n7','ETA em 7 dias'],['n30','ETA em 30 dias'],['u30','ETA nos últimos 30 dias']].concat(d.per&&d.per[0]==='w'?[[d.per,'Semana selecionada']]:[]))}${ativos.map(k=>`<button class="fchip" data-a="df" data-k="${k}" data-x="${esc(d[k])}" aria-label="Remover filtro ${esc(nomes[k](d[k]))}">${esc(nomes[k](d[k]))} ×</button>`).join('')}${ativos.length?'<button data-a="dfclear">Limpar filtros</button>':''}</div>`}
+function geral(){const A=alerts(),rows=recorte(A),cods=new Set(rows.map(r=>r.codigo)),AF=A.filter(a=>cods.has(a.r.codigo)&&(!S.df.ti||a.t===S.df.ti)),urg=AF.filter(a=>a.u===2).length,and=rows.filter(r=>stage(r)!=='ok').length,che=rows.filter(r=>{const e=val(r,'eta');if(!isISO(e)||stage(r)!=='pr')return false;const n=dif(e,hoje());return n>=0&&n<=7}).length;
+  let dem=0;rows.forEach(r=>conts(r).forEach(n=>{const c=ct(r,n);if(c.tot)dem+=c.tot}));const tm=media(rows.map(r=>entre(r,'chegada','desemb')));
+  const rSt=recorte(A,'st'),etapas=Object.keys(LAB).map(k=>({l:LAB[k],x:k,v:rSt.filter(r=>stage(r)===k).length,tip:`${LAB[k]}: ${rSt.filter(r=>stage(r)===k).length} processos`}));
+  const rTi=recorte(A,'ti'),cTi=new Set(rTi.map(r=>r.codigo)),ti=contar(A.filter(a=>cTi.has(a.r.codigo)),a=>a.t);
+  const rCa=recorte(A,'ca'),ca=contar(rCa,r=>val(r,'canal')||'Não informado');
+  const rAn=recorte(A,'an'),an=contar(rAn,r=>val(r,'analista')||'Sem responsável').slice(0,8).map(x=>{const u=A.filter(a=>a.u===2&&(val(a.r,'analista')||'Sem responsável')===x.l&&rAn.includes(a.r)).length;return{...x,tip:`${x.l}: ${x.v} processos, ${u} pendências urgentes`}});
+  const rPe=recorte(A,'per'),sem=[];for(let w=-2;w<=5;w++){const l=rPe.filter(r=>{const e=val(r,'eta');return isISO(e)&&semana(e)===w}).length;sem.push({w,v:l,d:add(segunda(),w*7)})}const mx=Math.max(1,...sem.map(x=>x.v)),px=S.df.per;
+  const prior={};AF.forEach(a=>{prior[a.r.codigo]=Math.max(prior[a.r.codigo]||0,a.u*10+1)});const lista=[...rows].sort((a,b)=>(prior[b.codigo]||0)-(prior[a.codigo]||0)).slice(0,8);
+  return `${barraFiltros()}<div class="kpis">
+  <button class="kpi" data-a="v" data-x="todos"><span>Processos em andamento</span><b>${and.toLocaleString('pt-BR')}</b><small>de ${rows.length.toLocaleString('pt-BR')} no filtro</small></button>
+  <button class="kpi" data-a="dgk"><span>Aguardando digitação</span><b>${rows.filter(r=>!digitado(r)&&stage(r)!=='ok').length}</b><small>${(()=>{const l=rows.filter(r=>!digitado(r)&&isISO(val(r,'criacao'))).map(r=>dif(hoje(),val(r,'criacao')));const n=l.length?Math.max(...l):0;return l.length?'mais antigo há '+(n===1?'1 dia':n+' dias'):'ver processos'})()}</small></button>
+  <button class="kpi${urg?' alto':''}" data-a="popon"><span>Pendências urgentes</span><b>${urg}</b><small>${AF.length} pendências no total</small></button>
+  <button class="kpi" data-a="df" data-k="per" data-x="n7"><span>Chegam em 7 dias</span><b>${che}</b><small>pelo ETA</small></button>
+  <button class="kpi${dem?' alto':''}" data-a="v" data-x="cont"><span>Demurrage até hoje</span><b style="font-size:24px;line-height:1.4">${usd(dem)}</b><small>containers com dados informados</small></button>
+  <div class="kpi" style="border:1px solid var(--line)"><span>Chegada até desembaraço</span><b>${dias(tm)}</b><small>dias em média</small></div></div>
+  <div class="grid"><section class="box s5"><h2>Processos por etapa</h2>${hbar('st',etapas)}</section>
+  <section class="box s7"><div class="head"><h2>Chegadas previstas por semana</h2><span class="note">ETA, da semana de início indicada</span></div><div><div class="colc${px&&px[0]==='w'?' tem':''}">${sem.map(s=>`<button data-a="df" data-k="per" data-x="w${s.w}" class="${px==='w'+s.w?'sel':''}" aria-pressed="${px==='w'+s.w}" data-tip="${esc('Semana de '+br(s.d)+': '+s.v+' processos')}" aria-label="Semana de ${br(s.d)}: ${s.v} processos">${s.v?`<span>${s.v}</span>`:''}<i style="height:${s.v?Math.round(s.v/mx*128):0}px"></i></button>`).join('')}</div><div class="coll" style="margin-top:6px">${sem.map(s=>`<span class="${s.w===0?'hoje':''}">${s.w===0?'Esta':br(s.d).slice(0,5)}</span>`).join('')}</div></div></section>
+  <section class="box s4"><h2>Pendências por tipo</h2>${hbar('ti',ti)}</section>
+  <section class="box s4"><h2>Processos por canal</h2>${hbar('ca',ca)}</section>
+  <section class="box s4"><h2>Carteira por responsável</h2>${hbar('an',an)}</section>
+  <section class="box s8"><div class="head"><h2>Processos que pedem atenção</h2><button data-a="v" data-x="todos">Ver todos</button></div><div class="tw"><table><thead><tr><th>Processo</th><th>Importador</th><th>Etapa</th><th>ETA</th><th>Responsável</th><th class="num">Pendências</th></tr></thead><tbody>${lista.map(r=>{const q=AF.filter(a=>a.r===r);return `<tr><td class="mono">${esc(r.codigo)}</td><td style="white-space:nowrap">${esc(val(r,'importador'))}</td><td style="white-space:nowrap">${LAB[stage(r)]}</td><td class="mono">${br(val(r,'eta'))||'—'}</td><td style="white-space:nowrap">${esc(val(r,'analista'))||'<span class="empty">Sem responsável</span>'}</td><td class="num"${q.length?` data-tip="${esc(q.map(a=>a.t).join(', '))}"`:''}>${q.length?`<span class="chip ${q.some(a=>a.u===2)?'red':'o-n'}">${q.length}</span>`:'<span class="empty">0</span>'}</td></tr>`}).join('')||'<tr><td colspan="6" class="empty">Nenhum processo neste filtro.</td></tr>'}</tbody></table></div></section>
+  <section class="box s4"><h2>Tempos médios em dias</h2><div><div class="tm"><span>Criação até digitação</span><b>${dias(media(rows.map(r=>{const a=val(r,'criacao'),b=digData(r);return isISO(a)&&isISO(b)&&dif(b,a)>=0?dif(b,a):NaN})))}</b></div>${[['Chegada até registro','chegada','registro'],['Registro até desembaraço','registro','desemb'],['Desembaraço até entrega','desemb','entrega']].map(x=>`<div class="tm"><span>${x[0]}</span><b>${dias(media(rows.map(r=>entre(r,x[1],x[2]))))}</b></div>`).join('')}</div></section></div>`}
+const RELS=[['etapas','Etapas'],['pend','Pendências'],['resp','Por responsável'],['cli','Por importador'],['dem','Demurrage'],['num','Numerário'],['tempo','Tempos'],['camp','Preenchimento']];
+function relatorio(id){const A=alerts(),rows=recorte(A),cod=new Set(rows.map(r=>r.codigo)),AF=A.filter(a=>cod.has(a.r.codigo)&&(!S.df.ti||a.t===S.df.ti)),dm=r=>{let t=0;conts(r).forEach(n=>{const c=ct(r,n);if(c.tot)t+=c.tot});return t},soma=(l,i)=>l.reduce((a,x)=>a+(Number(x[i])||0),0);
+  const grupo=fn=>{const m=new Map();rows.forEach(r=>{const k=fn(r);(m.get(k)||m.set(k,[]).get(k)).push(r)});return[...m.entries()]};
+  if(id==='etapas'){const L=Object.keys(LAB).map(k=>{const g=rows.filter(r=>stage(r)===k),q=AF.filter(a=>stage(a.r)===k);return[LAB[k],g.length,rows.length?g.length/rows.length:0,q.filter(a=>a.u===2).length,q.filter(a=>a.u!==2).length]});return{d:'Quantos processos há em cada etapa e o que está pendente.',c:[['Etapa','t'],['Processos','n'],['% do total','p'],['Urgentes','n'],['Atenção','n']],r:L,f:['Total',soma(L,1),1,soma(L,3),soma(L,4)]}}
+  if(id==='pend')return{d:'Todas as pendências ativas, das mais urgentes às demais.',c:[['Processo','m'],['Importador','t'],['Tipo','t'],['Prioridade','t'],['O que falta','t'],['Responsável','t']],r:AF.map(a=>[a.r.codigo,val(a.r,'importador'),a.t,a.u===2?'Urgente':'Atenção',a.d,val(a.r,'analista')||'Sem responsável'])};
+  if(id==='resp'||id==='cli'){const key=id==='resp'?r=>val(r,'analista')||'Sem responsável':r=>val(r,'importador')||'Não informado',L=grupo(key).map(([k,g])=>{const q=AF.filter(a=>key(a.r)===k);return[k,g.length,g.filter(r=>stage(r)!=='en').length,q.filter(a=>a.u===2).length,q.filter(a=>a.u!==2).length,g.reduce((t,r)=>t+dm(r),0)]}).sort((a,b)=>b[1]-a[1]);return{d:id==='resp'?'Carteira, pendências e demurrage de cada responsável.':'Carteira, pendências e demurrage de cada importador.',c:[[id==='resp'?'Responsável':'Importador','t'],['Processos','n'],['Em andamento','n'],['Urgentes','n'],['Atenção','n'],['Demurrage','u']],r:L,f:['Total',soma(L,1),soma(L,2),soma(L,3),soma(L,4),soma(L,5)]}}
+  if(id==='dem'){const L=[];rows.forEach(r=>conts(r).forEach(n=>{const c=ct(r,n);if(c.venc)L.push([r.codigo,val(r,'importador'),n,c.venc,isISO(c.dv)?c.dv:'',c.dias,c.tot||0,isISO(c.dv)?'Devolvido':'Em aberto'])}));L.sort((a,b)=>b[6]-a[6]);return{d:'Containers com data e free time informados. A conta vai até a devolução ou até hoje, com tarifa única.',c:[['Processo','m'],['Importador','t'],['Container','m'],['Vencimento','d'],['Devolução','d'],['Dias','n'],['Acumulada','u'],['Situação','t']],r:L,f:['Total','','','','',soma(L,5),soma(L,6),'']}}
+  if(id==='num'){const L=rows.filter(r=>val(r,'numdata')||val(r,'numval')).map(r=>{const d=val(r,'numdata'),rec=val(r,'numrec');return[r.codigo,val(r,'importador'),d,val(r,'numval'),rec,rec?'Recebido':'Aguardando',!rec&&isISO(d)?dif(hoje(),d):'']}).sort((a,b)=>(Number(b[6])||0)-(Number(a[6])||0));return{d:'Numerário solicitado e recebido em cada processo.',c:[['Processo','m'],['Importador','t'],['Solicitado em','d'],['Valor solicitado','t'],['Valor recebido','t'],['Situação','t'],['Dias em aberto','n']],r:L}}
+  if(id==='tempo'){const L=grupo(r=>val(r,'analista')||'Sem responsável').map(([k,g])=>[k,g.length,media(g.map(r=>entre(r,'chegada','registro'))),media(g.map(r=>entre(r,'registro','desemb'))),media(g.map(r=>entre(r,'desemb','entrega')))]).sort((a,b)=>b[1]-a[1]);return{d:'Média de dias entre os marcos, por responsável. Só entram processos com as duas datas.',c:[['Responsável','t'],['Processos','n'],['Chegada até registro','x'],['Registro até desembaraço','x'],['Desembaraço até entrega','x']],r:L}}
+  const L=F.filter(x=>x.o!=='c').map(x=>{const n=rows.filter(r=>val(r,x.k)!=='').length;return[x.l,ORI[x.o],n,rows.length?n/rows.length:0]}).sort((a,b)=>a[3]-b[3]);return{d:'Quanto cada campo está preenchido, do menos para o mais completo.',c:[['Campo','t'],['Situação','t'],['Preenchidos','n'],['% preenchido','p']],r:L}}
+const fmtCel=(v,t)=>{if(v===''||v==null||(typeof v==='number'&&!Number.isFinite(v)))return'';if(t==='n')return Number(v).toLocaleString('pt-BR');if(t==='p')return Math.round(v*100)+'%';if(t==='u')return usd(Number(v));if(t==='d')return br(v);if(t==='x')return dias(v);return String(v)};
+function relOrd(R){const o=S.rs;if(!o||o.id!==S.rp||o.i>=R.c.length)return R.r;const i=o.i,s=o.d;return[...R.r].sort((a,b)=>{const x=a[i],y=b[i];if(typeof x==='number'||typeof y==='number')return s*((Number.isFinite(x)?x:-1e15)-(Number.isFinite(y)?y:-1e15));return s*String(x??'').localeCompare(String(y??''),'pt-BR')})}
+function relatorios(){const R=relatorio(S.rp),L=relOrd(R),mostrar=L.slice(0,300),cl=t=>['n','p','u','x'].includes(t)?'num':'';
+  return `${barraFiltros()}<section class="box"><div class="seg">${RELS.map(x=>`<button data-a="rp" data-x="${x[0]}" class="${S.rp===x[0]?'on':''}">${x[1]}</button>`).join('')}</div><div class="head"><div><h2 style="font-size:18px">${RELS.find(x=>x[0]===S.rp)[1]}</h2><p class="note">${esc(R.d)}</p></div><div class="acts"><span class="note">${L.length.toLocaleString('pt-BR')} linhas</span><button data-a="relcopy">Copiar para Excel</button></div></div>
+  <div class="tw" id="tw"><table><thead><tr>${R.c.map((c,i)=>{const a=S.rs&&S.rs.id===S.rp&&S.rs.i===i?(S.rs.d>0?' ↑':' ↓'):'';return `<th class="${cl(c[1])}" ${a?`aria-sort="${S.rs.d>0?'ascending':'descending'}"`:''}><button data-a="rs" data-x="${i}">${esc(c[0])}${a}</button></th>`}).join('')}</tr></thead><tbody>${mostrar.map(l=>`<tr>${l.map((v,i)=>{const t=R.c[i][1],txt=fmtCel(v,t);return `<td class="${cl(t)}${t==='m'||t==='d'?' mono':''}">${txt?esc(txt):'<span class="empty">—</span>'}</td>`}).join('')}</tr>`).join('')||`<tr><td colspan="${R.c.length}" class="empty">Sem dados neste filtro.</td></tr>`}</tbody>${R.f&&L.length?`<tfoot><tr>${R.f.map((v,i)=>`<td class="${cl(R.c[i][1])}">${esc(fmtCel(v,R.c[i][1]))}</td>`).join('')}</tr></tfoot>`:''}</table></div>${L.length>300?'<p class="note">Mostrando 300 linhas. Use os filtros. A cópia para o Excel leva todas.</p>':''}</section>`}
+
+function ckData(r){const v=k=>val(r,k),d=k=>isISO(v(k))?br(v(k)):'',cs=conts(r),mar=!v('modal')||v('modal')==='Marítimo',seg=v('seguro'),devs=cs.map(n=>ct(r,n).dv).filter(isISO),it=(l,ok,info,na)=>({l,ok:!!ok,info:info||'',na:!!na}),dd=digData(r);
+  const info=[['Importador',v('importador')],['Ref. Cliente',v('ref')],['Exportador',v('exportador')],['Modal',v('modal')],['Responsável',v('analista')],['Etapa atual',LAB[stage(r)]],['Conhecimento',v('bl')],['Navio',mar?v('navio'):''],['Local de Embarque',v('porto')],['ETA',d('eta')],['Armazém/Recinto',v('armazem')],['Container',v('cont')],['Transportadora',v('transp')],['Nr. DUIMP',v('duimp')],['Seguro',seg||'Não verificado']];
+  const sec=[['Abertura',[it('Processo digitado',digitado(r),dd?br(dd):''),it('Numerário solicitado',v('numdata'),[d('numdata'),v('numval')].filter(Boolean).join(' · ')),it('Numerário recebido',v('numrec'),v('numrec'))]],
+  ['Embarque',[it('Fatura comercial recebida'),it('Packing list recebido'),it('Conhecimento de embarque recebido',v('bl'),[v('bl'),d('bldata')].filter(Boolean).join(' · ')),it('Seguro verificado',seg==='Sim'||seg==='Não',seg==='Sim'?'Com seguro, liberado':seg==='Não'?'Sem seguro':seg?'Aguardando liberação':''),it('LI/LPCO, se houver')]],
+  ['Chegada',[it('Chegada',v('chegada'),d('chegada')),it('Presença de carga',v('presenca'),d('presenca')),it('Destinação',v('dest'),d('dest')),it('MAPA',v('mapa'),d('mapa'))]],
+  ['Registro',[it('DUIMP registrada',v('registro'),[d('registro'),v('duimp')].filter(Boolean).join(' · ')),it('Canal',v('canal'),v('canal')),it('ICMS/exoneração',v('icms'),d('icms')||v('icms')),it('Armazenagem paga',v('pgarm'),[v('pgarm'),d('vcarm')?'vence '+d('vcarm'):''].filter(Boolean).join(' · '))]],
+  ['Liberação',[it('Desembaraço',v('desemb'),d('desemb')),it('NF-e',v('nfe'),d('nfe')),it('Entrega agendada / carregamento',v('agend'),d('agend')),it('Devolução do container',cs.length&&devs.length===cs.length,cs.length?devs.length+' de '+cs.length+' devolvido'+(cs.length>1?'s':''):'',!mar),it('Entrega',v('entrega'),d('entrega'))]],
+  ['Fechamento',[it('Faturamento',v('fatura'),d('fatura')),it('Encerramento no ERP',v('encerr'),d('encerr'))]]];
+  const pend=alerts().filter(a=>a.r===r).map(a=>a.t+': '+a.d),obs=notas(r).map(n=>(n.d?br(n.d).slice(0,5)+' - ':'')+n.t);
+  return{code:r.codigo,info,sec,pend,obs,feitos:sec.reduce((t,x)=>t+x[1].filter(i=>i.ok).length,0),total:sec.reduce((t,x)=>t+x[1].filter(i=>!i.na).length,0)}}
+function ckDialog(){if(!S.ck)return'';const r=S.rows.find(x=>x.codigo===S.ck);if(!r){S.ck=null;return''}const c=ckData(r);
+  return `<div class="ov" data-a="ckfora"><div class="pop ckpop" role="dialog" aria-modal="true" aria-labelledby="cktit"><div class="head"><div><h2 id="cktit">Checklist do Processo</h2><p class="note">Prévia da folha A4. ${c.feitos} de ${c.total} itens concluídos no sistema.</p></div><div class="acts"><button id="ckclose" data-a="ckoff">Fechar</button><button class="pri" data-a="ckpdf">Baixar PDF para imprimir</button></div></div>
+  <div class="paper"><div class="pp-top"><div><b class="pp-brand">DESPACHANTE EXEMPLO</b><span>Checklist do Processo</span></div><div style="text-align:right"><b class="pp-code">${esc(c.code)}</b><span>Gerado em ${nowBr()}</span></div></div>
+  <div class="pp-info">${c.info.map(x=>`<div><span>${esc(x[0])}</span><b>${esc(x[1])||'—'}</b></div>`).join('')}</div>
+  <div class="pp-ck">${[c.sec.slice(0,3),c.sec.slice(3)].map(col=>`<div>${col.map(x=>`<div><h3>${x[0]}</h3>${x[1].map(i=>`<div class="pp-i${i.ok?' ok':''}${i.na?' na':''}"><i aria-hidden="true">${i.ok?'✓':i.na?'–':''}</i><span>${esc(i.l)}${!i.ok&&i.info?` <em>(${esc(i.info)})</em>`:''}</span><small>${i.na?'Não se aplica':i.ok?esc(i.info||'Feito'):'___/___  Visto ______'}</small></div>`).join('')}</div>`).join('')}</div>`).join('')}</div>
+  <div class="pp-sec"><h3>Pendências no momento</h3>${c.pend.length?c.pend.slice(0,4).map(t=>`<p>• ${esc(t)}</p>`).join('')+(c.pend.length>4?`<p>• Mais ${c.pend.length-4} no sistema</p>`:''):'<p>Nenhuma pendência ativa.</p>'}</div>
+  <div class="pp-sec"><h3>Observações</h3>${c.obs.slice(-6).map(t=>`<p>${esc(t)}</p>`).join('')}<div class="pp-lin"></div><div class="pp-lin"></div><div class="pp-lin"></div></div></div></div></div>`}
+async function salvarArquivo(filename,data){const noClaude=!!(window.claude&&window.claude.use);let dl=null;if(noClaude){try{dl=await window.claude.use('downloads')}catch(e){}if(!dl)throw{code:'unavailable'};return dl.save({filename,data})}const ext=filename.split('.').pop(),mime={pdf:'application/pdf',xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',csv:'text/csv;charset=utf-8'}[ext]||'application/octet-stream',url=URL.createObjectURL(new Blob([data],{type:mime})),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);return{status:'saved'}}
+let pdfLibP=null;function carregaPdf(){if(window.PDFLib)return Promise.resolve();return pdfLibP||(pdfLibP=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js';sc.onload=()=>window.PDFLib?ok():no();sc.onerror=()=>{pdfLibP=null;no()};document.head.appendChild(sc)}))}
+async function ckPdf(code){const r=S.rows.find(x=>x.codigo===code);if(!r)return;
+  try{await carregaPdf()}catch(e){S.msg='Não foi possível carregar o gerador de PDF. Verifique a conexão e tente de novo.';redraw();return}
+  const {PDFDocument,StandardFonts,rgb}=PDFLib,c=ckData(r),doc=await PDFDocument.create(),pg=doc.addPage([595.28,841.89]),f=await doc.embedFont(StandardFonts.Helvetica),fb=await doc.embedFont(StandardFonts.HelveticaBold);
+  doc.setTitle('Checklist '+code);doc.setAuthor('Despachante Exemplo');
+  const INK=rgb(.08,.16,.21),MUT=rgb(.38,.45,.49),LINE=rgb(.8,.84,.86),FILL=rgb(.93,.95,.96),ACC=rgb(.05,.43,.52),W=595.28,M=36;
+  const lim=t=>String(t??'').replace(/[–—]/g,'-').replace(/[“”]/g,'"').replace(/[‘’]/g,"'").replace(/…/g,'...').replace(/·/g,'·').replace(/[^\x20-\x7E\xA0-\xFF•]/g,'');
+  const fit=(t,fo,sz,w)=>{t=lim(t);if(fo.widthOfTextAtSize(t,sz)<=w)return t;while(t.length&&fo.widthOfTextAtSize(t+'...',sz)>w)t=t.slice(0,-1);return t+'...'};
+  const tx=(t,x,y,o={})=>{const fo=o.b?fb:f,sz=o.s||9,txt=o.w?fit(t,fo,sz,o.w):lim(t),xx=o.r?x-fo.widthOfTextAtSize(txt,sz):x;pg.drawText(txt,{x:xx,y,size:sz,font:fo,color:o.c||INK})};
+  const hl=(y,x1=M,x2=W-M,c=LINE,t=.6)=>pg.drawLine({start:{x:x1,y},end:{x:x2,y},thickness:t,color:c});
+  let y=841.89-M;
+  tx('DESPACHANTE EXEMPLO',M,y-16,{b:1,s:18});tx('Checklist do Processo',M,y-30,{s:10,c:MUT});tx(code,W-M,y-16,{b:1,s:15,r:1});tx('Gerado em '+nowBr()+'  ·  '+c.feitos+' de '+c.total+' itens concluídos',W-M,y-30,{s:8,c:MUT,r:1});
+  y-=40;hl(y,M,W-M,INK,1.2);
+  const cw=(W-2*M)/3;c.info.forEach((p,i)=>{const col=i%3,row=Math.floor(i/3),x=M+col*cw,yy=y-12-row*23;tx(p[0].toUpperCase(),x,yy,{s:6.5,c:MUT});tx(p[1]||'-',x,yy-10,{s:9,w:cw-8,b:1})});
+  y-=12+5*23;hl(y);
+  const gap=18,colW=(W-2*M-gap)/2;const coluna=(secs,x0)=>{let yy=y-10;secs.forEach(([nome,itens])=>{pg.drawRectangle({x:x0,y:yy-13,width:colW,height:14,color:FILL});tx(nome.toUpperCase(),x0+5,yy-9.5,{b:1,s:8});yy-=19;itens.forEach(i=>{const by=yy-9;pg.drawRectangle({x:x0+2,y:by,width:9,height:9,borderColor:i.na?LINE:INK,borderWidth:.8});
+      if(i.ok){pg.drawLine({start:{x:x0+3.6,y:by+4.6},end:{x:x0+5.8,y:by+2.2},thickness:1.3,color:ACC});pg.drawLine({start:{x:x0+5.8,y:by+2.2},end:{x:x0+10,y:by+8},thickness:1.3,color:ACC})}
+      if(i.na)pg.drawLine({start:{x:x0+4,y:by+4.5},end:{x:x0+9,y:by+4.5},thickness:.8,color:MUT});
+      const dir=i.na?'Não se aplica':i.ok?(i.info||'Feito'):'___/___   Visto _______',dw=Math.min(118,f.widthOfTextAtSize(lim(dir),7.5));
+      tx(i.l+(!i.ok&&i.info?' ('+i.info+')':''),x0+16,by+1.5,{s:8.5,w:colW-dw-26,c:i.na?MUT:INK});tx(dir,x0+colW-2,by+1.5,{s:7.5,c:i.ok?ACC:MUT,r:1,w:118});
+      hl(by-4,x0,x0+colW,FILL,.5);yy-=17});yy-=4});return yy};
+  const b1=coluna(c.sec.slice(0,3),M),b2=coluna(c.sec.slice(3),M+colW+gap);y=Math.min(b1,b2)-4;hl(y);
+  tx('PENDÊNCIAS NO MOMENTO',M,y-14,{b:1,s:8});y-=26;const pl=c.pend.length?c.pend.slice(0,4).concat(c.pend.length>4?['Mais '+(c.pend.length-4)+' pendências no sistema']:[]):['Nenhuma pendência ativa.'];pl.forEach(t=>{tx('•  '+t,M,y,{s:8,w:W-2*M});y-=12});
+  y-=4;hl(y);tx('OBSERVAÇÕES',M,y-14,{b:1,s:8});y-=26;c.obs.slice(-6).forEach(t=>{tx(t,M,y,{s:8,w:W-2*M});y-=12});
+  y-=4;while(y>62){hl(y,M,W-M,LINE,.5);y-=18}
+  hl(48,M,W-M,LINE,.6);tx('Follow-Up Operacional  ·  Confira sempre o sistema antes de agir.',M,36,{s:7,c:MUT});tx('Página 1 de 1',W-M,36,{s:7,c:MUT,r:1});
+  const bytes=await doc.save();
+  try{await salvarArquivo('checklist-'+code.replace(/[^\w-]+/g,'-')+'.pdf',bytes);S.msg='Checklist de '+code+' gerado.'}catch(e){const k=e&&e.code;S.msg=k==='declined'?'Download cancelado.':k==='rate_limited'?'Já há uma confirmação aberta. Conclua ou aguarde e tente de novo.':'Não foi possível baixar o PDF nesta visualização.'}redraw()}
+function celTexto(r,c){if(c.fim)return fimMot(r);if(c.dig)return digitado(r)?'Digitado':'Aguardando'+(faltam(r).length?' (faltam: '+faltam(r).join(', ')+')':'');if(c.pseudo)return LAB[stage(r)];if(c.k==='obs')return notas(r).map(n=>(n.d?br(n.d)+' - ':'')+n.t).join(' | ');if(c.k==='navio'&&val(r,'modal')&&val(r,'modal')!=='Marítimo')return'';if(c.k==='seguro')return val(r,'seguro')||'Não verificado';const v=val(r,c.k);return c.t==='d'?br(v):v}
+async function exportar(){const st=S.v==='ok'?'ok':'',{list,show}=tabelaDados(st);if(!list.length){S.msg='Nenhum processo para exportar com esses filtros.';redraw();return}
+  const cols=[{k:'codigo',l:'Código Processo',t:'t'},...show.filter(c=>!c.nx)],aoa=[cols.map(c=>c.l),...list.map(r=>cols.map(c=>c.k==='codigo'?r.codigo:celTexto(r,c)))];
+  const nome='follow-up-'+(st?'encerrados':'processos')+'-'+hoje()+'.';
+  let file,data;try{if(!window.XLSX)throw 0;const ws=XLSX.utils.aoa_to_sheet(aoa);ws['!cols']=cols.map((c,i)=>({wch:Math.min(48,Math.max(10,...aoa.slice(0,200).map(l=>String(l[i]??'').length)))}));ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:0,c:0},e:{r:aoa.length-1,c:cols.length-1}})};const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,st?'Encerrados':'Processos Aduana');data=new Uint8Array(XLSX.write(wb,{type:'array',bookType:'xlsx'}));file=nome+'xlsx'}
+  catch(e){data='﻿'+aoa.map(l=>l.map(v=>{const x=String(v??'');return /[;"\n\r]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x}).join(';')).join('\r\n');file=nome+'csv'}
+  try{await salvarArquivo(file,data);S.msg='Planilha exportada com '+list.length+' processos.'}catch(e){const c=e&&e.code;S.msg=c==='declined'?'Exportação cancelada.':c==='rate_limited'?'Já há uma confirmação aberta. Conclua ou aguarde e tente de novo.':'Não foi possível exportar nesta visualização.'}redraw()}
+function relCopiar(){const R=relatorio(S.rp),L=relOrd(R),lim=s=>String(s).replace(/[\t\r\n]+/g,' '),tsv=[R.c.map(c=>c[0]).join('\t'),...L.map(l=>l.map((v,i)=>lim(fmtCel(v,R.c[i][1]))).join('\t'))].join('\n');const ok=()=>{S.msg='Tabela copiada. Cole no Excel.';redraw()},nao=()=>{S.msg='O navegador não permitiu copiar. Selecione a tabela com o mouse e copie.';redraw()};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(tsv).then(ok,nao);else nao()}
+function menu(A){const cnt={};Object.keys(STG).forEach(k=>cnt[k]=0);S.rows.forEach(r=>cnt[stage(r)]++);const b=(k,l,n)=>`<button data-a="v" data-x="${k}" class="${S.v===k?'on':''}"${S.v===k?' aria-current="page"':''}><span>${esc(l)}</span>${n!==undefined?`<span class="n">${n}</span>`:''}</button>`,d=S.src;
+  return `<aside class="side${S.menu?' aberta':''}"><div class="brand"><b>Follow-Up</b><button class="so-cel" data-a="menu">Fechar menu</button><span>Operacional</span></div><nav class="nav" aria-label="Menu"><div class="grp"><span>Gestão</span>${b('geral','Painel',A.length||undefined)}${b('rel','Relatórios')}</div><div class="grp"><span>Processos</span>${b('todos','Processos Aduana',S.rows.length.toLocaleString('pt-BR'))}${Object.keys(STG).map(k=>b(k,STG[k].replace('Chegada / Presença de Carga','Chegada / Presença').replace('Registrada / Ag. Desembaraço','Registrada'),cnt[k].toLocaleString('pt-BR'))).join('')}</div><div class="grp"><span>Controle</span>${b('cont','Container e Demurrage')}${b('regras','Regras de alerta')}${b('hist','Histórico',S.log.length||undefined)}</div><div class="grp"><span>Cadastros</span>${b('nav','Navios',S.navios.length.toLocaleString('pt-BR'))}${b('mapa','Mapa de Campos')}${b('imp','Importar planilha')}</div></nav><div class="foot">${d?`<strong>${esc(d.nome)}</strong><span>${d.total} processos · ${esc(d.em)}</span>`:'<strong>Dados de exemplo</strong><span>Processos, clientes e containers fictícios.</span>'}<span>${S.stored?'O que você importa e preenche fica só neste navegador.':'O navegador não permitiu salvar: os dados somem ao fechar.'}</span></div></aside>`}
+function header(A){const t=STG[S.v]?[STG[S.v],REGRA[S.v]]:(TIT[S.v]||['','']);return `<div class="top"><div><span class="mbrand">Follow-Up Operacional</span><h1>${esc(t[0])}</h1><p class="sub">${esc(t[1])}</p></div><div class="acts">${A.length&&S.v!=='imp'?`<button data-a="popon" class="pri so-desk">Decisões pendentes (${A.length})</button>`:''}${S.v!=='imp'?'<button class="so-desk" data-a="imp">Importar planilha</button>':''}${S.src||S.log.length?'<button data-a="clear">Limpar dados</button>':''}</div></div>
+  ${S.clear?`<div class="src"><span><strong>Apagar a planilha, os preenchimentos e o histórico deste navegador?</strong></span><button data-a="clearok">Apagar e voltar aos exemplos</button><button data-a="clearno">Cancelar</button></div>`:''}
+  ${S.msg?`<div class="src" role="status"><span>${esc(S.msg)}</span>${S.undo?'<button data-a="undo">Desfazer</button>':''}<button data-a="msgoff">Fechar</button></div>`:''}`}
+function legend(){return `<div class="legend">${Object.keys(ORI).map(o=>`<span><i class="dot d-${o}"></i>${ORI[o]}</span>`).join('')}<span>Texto cortado: passe o mouse para ver completo.</span></div>`}
+function filters(){const an=uniq('analista'),ca=uniq('canal'),mods=[...MODAIS,...(S.rows.some(r=>!val(r,'modal'))?['Não informado']:[])],cnt=m=>S.rows.filter(r=>(val(r,'modal')||'Não informado')===m).length,nOk=S.rows.filter(r=>stage(r)==='ok').length;return `${S.v==='todos'?`<div class="seg" role="group" aria-label="Situação">${[['','Todos',S.rows.length],['and','Em andamento',S.rows.length-nOk],['ok','Encerrados',nOk]].map(x=>`<button data-a="sit" data-x="${x[0]}" class="${S.sit===x[0]?'on':''}" aria-pressed="${S.sit===x[0]}">${x[1]} <span class="note" style="display:inline">${x[2]}</span></button>`).join('')}</div>`:''}<div class="seg" role="group" aria-label="Modal"><button data-a="mf" data-x="" class="${S.mf?'':'on'}" aria-pressed="${!S.mf}">Todos os modais</button>${mods.map(m=>`<button data-a="mf" data-x="${m}" class="${S.mf===m?'on':''}" aria-pressed="${S.mf===m}">${m} <span class="note" style="display:inline">${cnt(m)}</span></button>`).join('')}</div><div class="filters"><label class="vis" for="q">Buscar</label><input id="q" value="${esc(S.q)}" placeholder="Buscar processo, cliente, BL ou DUIMP">
+  <label class="vis" for="fan">Analista</label><select id="fan"><option value="">Todos os analistas</option>${an.map(x=>`<option${S.an===x?' selected':''}>${esc(x)}</option>`).join('')}</select>
+  <label class="vis" for="fca">Canal</label><select id="fca"><option value="">Todos os canais</option>${ca.map(x=>`<option${S.ca===x?' selected':''}>${esc(x)}</option>`).join('')}</select>
+  <label style="display:flex;gap:6px;align-items:center;font-size:13px"><input id="fdg" type="checkbox" style="min-height:0"${S.dgf?' checked':''}> Só aguardando digitação</label><label style="display:flex;gap:6px;align-items:center;font-size:13px"><input id="fpe" type="checkbox" style="min-height:0"${S.pe?' checked':''}> Só com pendência</label></div>`}
+const lockedVal=(r,k)=>r[k]!==undefined&&r[k]!=='';
+const segCls=v=>v==='Sim'?'sg-ok':v==='Não'?'sg-no':v?'sg-ag':'sg-vz';
+function obsCel(r){const n=notas(r),u=n[n.length-1];return `<td><button class="obsb" data-a="obs" data-x="${esc(r.codigo)}" data-obs="${esc(r.codigo)}" aria-haspopup="dialog" aria-label="Observação de ${esc(r.codigo)}">${u?`${u.d?`<span class="mono">${br(u.d).slice(0,5)}</span> `:''}${esc(u.t)}${n.length>1?` <span class="obsn">+${n.length-1}</span>`:''}`:'<span class="empty">Adicionar</span>'}</button></td>`}
+function cell(r,fd,i){const v=val(r,fd.k),id=`e${i}_${fd.k}`;
+  if(fd.fim){const m=fimMot(r);return `<td>${m?`<span class="chip ${m==='Encerrado'?'et-ab':'grn'}">${m}</span>`:''}</td>`}
+  if(fd.dig)return digCel(r);
+  if(fd.pseudo)return `<td><span class="chip et-${stage(r)}">${LAB[stage(r)]}</span></td>`;
+  if(fd.ro)return `<td style="white-space:nowrap">${esc(v)||'<span class="empty">—</span>'}</td>`;
+  if(fd.k==='obs')return obsCel(r);
+  if(fd.k==='navio'&&val(r,'modal')&&val(r,'modal')!=='Marítimo')return '<td></td>';
+  if(fd.o==='c')return `<td><div class="c mono">${esc(v)||'<span class="empty">—</span>'}</div></td>`;
+  if(lockedVal(r,fd.k)){const s=fd.t==='d'?br(v):v;return `<td><div class="c${fd.k==='seguro'?' '+segCls(v)+' sgt':''}" title="${esc(s)}">${esc(s)}</div></td>`}
+  const data=`id="${id}" data-e="${esc(r.codigo)}" data-f="${fd.k}" aria-label="${esc(fd.l)} de ${esc(r.codigo)}"`;
+  if(fd.t==='s')return `<td><select ${data} class="segsel ${segCls(v)}">${SEG.map(o=>`<option value="${esc(o)}"${v===o?' selected':''}>${o||'Não verificado'}</option>`).join('')}</select></td>`;
+  if(fd.t==='o')return `<td><select ${data}>${['',...MODAIS].map(o=>`<option value="${o}"${v===o?' selected':''}>${o||'Não informado'}</option>`).join('')}</select></td>`;
+  if(fd.t==='l')return `<td><select ${data}>${LCL.map(o=>`<option value="${o}"${v===o?' selected':''}>${o||'Em branco'}</option>`).join('')}</select></td>`;
+  if(fd.t==='d')return `<td><input type="date" ${data} value="${isISO(v)?v:''}"></td>`;
+  if(fd.k==='navio')return `<td><input ${data} list="dl-nav" value="${esc(v)}" title="${esc(v)}" placeholder="Escolha ou digite" autocomplete="off" style="width:190px"></td>`;return `<td><input ${data} value="${esc(v)}" title="${esc(v)}"></td>`}
+const colDef=k=>k==='__fim'?{k,l:'Situação final',o:'c',fim:1}:k==='__dig'?{k,l:'Digitação',o:'c',dig:1}:k==='__etapa'?{k,l:'Etapa',o:'c',pseudo:1}:k==='analista'?{k,l:'Responsável',o:'p',ro:1}:F.find(x=>x.k===k);
+function sortVal(r,k){if(k==='__etapa')return['dg','ab','pr','ch','re','de','en','ok'].indexOf(stage(r));if(k==='obs'){const n=notas(r);return n.length?(n[n.length-1].d||'0000')+n[n.length-1].t:''}if(k==='__dig')return digitado(r)?1:0;if(k==='__fim')return fimMot(r);return val(r,k)}
+function tabelaDados(st){const vid=st||'todos',keys=st?COLS[st]:['codigo','importador','__etapa','__dig','analista',...F.map(x=>x.k).filter(k=>!['codigo','importador','modal','status','chegada','presenca'].includes(k)).flatMap(k=>k==='eta'?['eta','chegada','presenca']:[k]),'modal','status'];
+  let list=filtered(st);const nk=st&&NEXT[st],so=S.ts&&S.ts.v===vid&&(keys.includes(S.ts.k)||S.ts.k===nk)?S.ts:null;
+  if(so)list=[...list].sort((a,b)=>{const x=sortVal(a,so.k),y=sortVal(b,so.k),ex=x===''||x==null,ey=y===''||y==null;if(ex||ey)return ex&&ey?0:ex?1:-1;return so.d*(typeof x==='number'&&typeof y==='number'?x-y:String(x).localeCompare(String(y),'pt-BR',{numeric:true}))});
+  const TL={porto:'Local de Embarque',eta:'ETA'},show=keys.filter(k=>k!=='codigo').map(k=>{const c=colDef(k);return !st&&TL[k]?{...c,l:TL[k]}:c});if(nk){const d=F.find(x=>x.k===nk);show.splice(show.findIndex(c=>c.k==='modal'),0,{...d,l:'Informar '+d.l,nx:1})}return{list,show,so}}
+function table(st){const {list,show,so}=tabelaDados(st);
+  const pages=Math.max(1,Math.ceil(list.length/PAGE));if(S.pg>=pages)S.pg=0;const pg=list.slice(S.pg*PAGE,(S.pg+1)*PAGE);
+  const th=(c,cls)=>{if(c.nx)cls='nx';const on=so&&so.k===c.k,ar=on?(so.d>0?'↑':'↓'):'↕';return `<th${cls?` class="${cls}"`:''}${on?` aria-sort="${so.d>0?'ascending':'descending'}"`:''}><button data-a="ts" data-x="${c.k}" title="Ordenar por ${esc(c.l)}">${c.pseudo||c.ro||c.dig||c.fim?'':`<i class="dot d-${c.o}"></i>`}${esc(c.l)} <span class="ar${on?' on':''}" aria-hidden="true">${ar}</span></button></th>`};
+  return `${!st||st==='ok'?`<div class="acts" style="justify-content:space-between"><span class="note">${st?'Processos fora das abas de etapa.':'Exporte a lista com os filtros e a ordem atuais para conferir e dar baixa no ERP.'}</span><button data-a="exp" class="pri">Exportar planilha</button></div>`:''}${filters()}${list.length?`<div class="tw" id="tw"><table><thead><tr>${th(F[0],'stick')}${show.map(c=>th(c)).join('')}</tr></thead><tbody>${pg.map(r=>{const i=S.rows.indexOf(r),ab=!!S.open[r.codigo];return `<tr class="proc${ab?' abr':''}"><td class="stick"><span title="${esc(r.codigo)}">${esc(r.codigo)}</span>${!st?`<button class="ckb" data-a="ck" data-x="${esc(r.codigo)}" title="Gerar checklist do processo">Checklist</button>`:''}<button class="so-cel rowt" id="rt${i}" data-a="rowt" data-x="${esc(r.codigo)}" aria-expanded="${ab}">${ab?'Recolher':'Ver campos'}</button></td>${show.map(c=>cell(r,c,i)).join('')}</tr>`}).join('')}</tbody></table></div>`:'<div class="box"><p class="note">Nenhum processo com esses filtros.</p></div>'}
+  ${pages>1?`<div class="pag"><span>Página ${S.pg+1} de ${pages} · ${list.length} processos</span><button data-a="pg" data-x="-1">Anterior</button><button data-a="pg" data-x="1">Próxima</button></div>`:`<div class="pag"><span>${list.length} processos</span></div>`}${legend()}`}
+function containers(){const q=norm(S.q);const rows=[];filtered().forEach(r=>conts(r).forEach(n=>rows.push([r,n])));const list=q?rows:rows;let tot=0,ab=0;list.forEach(([r,n])=>{const c=ct(r,n);if(c.tot)tot+=c.tot;if(!isISO(c.dv))ab++});
+  const inp=(r,n,k,v,t,cls)=>`<input id="c${esc(r.codigo)}_${esc(n)}_${k}" ${t?`type="${t}"`:''} ${cls?`class="${cls}"`:''} data-c="${esc(r.codigo)}" data-n="${esc(n)}" data-k="${k}" value="${esc(v??'')}" aria-label="${k} de ${esc(n)}">`;
+  return `${filters()}<div class="kpis"><div class="box"><span class="note">Containers</span><div style="font:600 30px/1 var(--f-disp)">${list.length}</div></div><div class="box"><span class="note">Sem devolução</span><div style="font:600 30px/1 var(--f-disp)">${ab}</div></div><div class="box"><span class="note">Demurrage até hoje</span><div style="font:600 30px/1 var(--f-disp);color:var(--alerta)">${usd(tot)}</div></div></div>
+  ${list.length?`<div class="tw" id="tw"><table><thead><tr><th class="stick">Processo</th><th>Container</th><th><i class="dot d-n"></i>Descarga</th><th><i class="dot d-n"></i>Início do free time</th><th><i class="dot d-n"></i>Free time</th><th><i class="dot d-c"></i>Vencimento</th><th><i class="dot d-n"></i>Devolução</th><th><i class="dot d-n"></i>Tarifa/dia (USD)</th><th><i class="dot d-n"></i>Termo</th><th><i class="dot d-c"></i>Dias</th><th><i class="dot d-c"></i>Acumulada</th></tr></thead><tbody>${list.slice(0,200).map(([r,n])=>{const c=ct(r,n);return `<tr><td class="stick">${esc(r.codigo)}</td><td class="mono">${esc(n)}</td><td>${inp(r,n,'descarga',isISO(c.de)?c.de:'','date')}</td><td style="white-space:nowrap">${inp(r,n,'inicio',isISO(c.ini)?c.ini:'','date')} ${c.ini?`<span class="chip ${c.alt?'grn':'red'}">${c.alt?'Alterado':'Automático'}</span>`:''}</td><td>${inp(r,n,'free',c.fr,'','sm')}</td><td class="mono">${c.venc?br(c.venc):'—'}</td><td>${inp(r,n,'devol',isISO(c.dv)?c.dv:'','date')}</td><td>${inp(r,n,'tarifa',c.tar,'','sm')}</td><td>${inp(r,n,'termo',c.termo,'','sm')}</td><td class="mono">${c.dias===null?'—':c.dias}</td><td class="mono">${c.tot===null?'—':usd(c.tot)}</td></tr>`}).join('')}</tbody></table></div>`:'<div class="box"><p class="note">Preencha o campo Container nas abas de processo para ver as linhas aqui. Separe mais de um número com barra.</p></div>'}
+  <p class="note">Regra atual: o início é o dia seguinte à descarga, ou a data do contrato com o armador. A conta vai até a devolução e inclui esse dia. Ainda usa tarifa única e não separa demurrage de detention.</p>`}
+function hist(){return `<section class="box"><div class="head"><h2>Histórico de alterações</h2><span class="note">Sem login nesta versão: o autor aparece como "Você"</span></div>${S.log.length?`<div class="tw"><table><thead><tr><th>Quando</th><th>Quem</th><th>Processo</th><th>Campo</th><th>Antes</th><th>Depois</th></tr></thead><tbody>${S.log.slice(0,200).map(l=>`<tr><td class="mono" style="white-space:nowrap">${esc(l.q)}</td><td>Você</td><td class="mono" style="white-space:nowrap">${esc(l.r)}</td><td style="white-space:nowrap">${esc(l.f)}</td><td>${esc(l.a)||'<span class="empty">vazio</span>'}</td><td>${esc(l.b)||'<span class="empty">vazio</span>'}</td></tr>`).join('')}</tbody></table></div>`:'<p class="note">Altere um campo em qualquer aba para ver o registro aqui.</p>'}</section>`}
+function mapa(){const all=[...F,...FC],mapd=S.src?new Set(S.src.campos):null;const n=o=>all.filter(x=>x.o===o).length;const base=mapd?all.filter(x=>x.o!=='c'&&mapd.has(x.k)).length:0;
+  const list=all.filter(x=>!S.mo||x.o===S.mo);
+  return `<div class="filters"><button data-a="mo" data-x="" class="${S.mo===''?'pri':''}">Todos (${all.length})</button>${Object.keys(ORI).map(o=>`<button data-a="mo" data-x="${o}" class="${S.mo===o?'pri':''}">${ORI[o]} (${n(o)})</button>`).join('')}</div>${mapd?`<p class="note">${base} campos vieram da planilha. O restante fica para preenchimento manual ou cálculo.</p>`:'<p class="note">A lista tem os 45 campos da planilha inicial mais Data de descarga e Início do free time. Depois de importar, ela mostra o que veio do seu arquivo.</p>'}
+  <div class="tw"><table><thead><tr><th>Campo</th><th>Situação</th><th>Aba</th>${mapd?'<th>Nesta planilha</th>':''}</tr></thead><tbody>${list.map(x=>`<tr><td>${esc(x.l)}</td><td><span class="chip o-${x.o}">${ORI[x.o]}</span></td><td style="color:var(--muted)">${x.s==='ct'?'Container e Demurrage':(STG[x.s]||'Processos Aduana')}</td>${mapd?`<td>${x.o==='c'?'Calculado':mapd.has(x.k)?'Encontrado':'<span class="empty">Manual</span>'}</td>`:''}</tr>`).join('')}</tbody></table></div>`}
+function importer(){const m=S.map;if(!m)return `<section class="box"><div class="head"><h2>Importar planilha do ERP</h2><button data-a="impno">Voltar</button></div><div class="drop" id="drop"><p style="margin:0 0 10px">Arraste o arquivo aqui ou escolha no computador. Aceita Excel (.xlsx, .xls) e CSV.</p><label class="btn pri" style="min-height:36px;padding:0 12px" for="file">Escolher arquivo</label><input id="file" class="vis" type="file" accept=".xlsx,.xls,.csv"></div>${S.err?`<p class="err" role="alert">${esc(S.err)}</p>`:''}<p class="note">O arquivo é lido neste navegador e não é enviado para nenhum servidor. O sistema usa o Código para atualizar processos sem apagar o que a equipe preencheu.</p></section>`;
+  const found=IMPF.filter(x=>m.sel[x.k]!=='').length,used=new Set(Object.values(m.sel).filter(x=>x!=='').map(Number)),rest=m.heads.filter((h,i)=>h&&!used.has(i));
+  return `<section class="box"><div class="head"><div><h2>Confira as colunas</h2><p class="note">${esc(m.nome)} · ${m.rows.length} linhas · ${found} de ${IMPF.length} campos encontrados</p></div><div class="acts"><button data-a="impno">Cancelar</button><button data-a="impok" class="pri">Importar</button></div></div>${S.err?`<p class="err" role="alert">${esc(S.err)}</p>`:''}
+  <div class="tw"><table><thead><tr><th>Campo do Follow-Up</th><th>Coluna da planilha</th><th>Exemplo</th></tr></thead><tbody>${IMPF.map(x=>{const s=m.sel[x.k],ex=s===''?'':m.rows.map(r=>r[+s]).find(v=>v!==''&&v!=null);return `<tr><td style="white-space:nowrap">${esc(x.l)}${x.k==='codigo'?' <span class="chip red">Obrigatório</span>':''}</td><td><select data-m="${x.k}" aria-label="Coluna para ${esc(x.l)}" style="width:220px"><option value="">Preencher manualmente</option>${m.heads.map((h,i)=>h?`<option value="${i}"${String(s)===String(i)?' selected':''}>${esc(h)}</option>`:'').join('')}</select></td><td class="mono" style="min-width:140px">${ex===undefined||ex===''?'':esc(toVal(x,ex))}</td></tr>`}).join('')}</tbody></table></div>${rest.length?`<p class="note">Colunas não usadas: ${esc(rest.join(', '))}.</p>`:''}</section>`}
+function decisao(a,j){if(a.dg)return `<button data-a="dig" data-x="${esc(a.r.codigo)}">Marcar como digitado</button>`;const r=a.r,lab='display:grid;gap:2px;font-size:12px;color:var(--muted)';
+  if(a.fk){const fd=F.find(x=>x.k===a.fk),v=val(r,a.fk);if(lockedVal(r,a.fk))return `<span class="note">${esc(v)}. Ajustar no ERP</span>`;const at=`id="pe${j}" data-e="${esc(r.codigo)}" data-f="${fd.k}"`;if(fd.t==='s')return `<label style="${lab}" for="pe${j}">${esc(fd.l)}<select ${at}>${SEG.map(o=>`<option value="${esc(o)}"${v===o?' selected':''}>${o||'Em branco'}</option>`).join('')}</select></label>`;return `<label style="${lab}" for="pe${j}">${esc(fd.l)}<input ${at} ${fd.t==='d'?'type="date"':''}></label>`}
+  if(a.ck){const fd=FC.find(x=>x.k===a.ck);return `<label style="${lab}" for="pe${j}">${esc(fd.l)}<input id="pe${j}" ${fd.t==='d'?'type="date"':''} data-c="${esc(r.codigo)}" data-n="${esc(a.n)}" data-k="${fd.k}"></label>`}
+  return '<span class="note">Definir no ERP</span>'}
+function addNavios(list){let c=0;list.forEach(x=>{const n=String(x??'').trim().replace(/\s+/g,' ').toUpperCase(),k=norm(n);if(n&&k&&!navKeys.has(k)){navKeys.set(k,n);S.navios.push(n);S.navDel=S.navDel.filter(d=>d!==n);c++}});if(c)S.navios.sort((a,b)=>a<b?-1:a>b?1:0);return c}
+function navFill(t){const dl=document.getElementById('dl-nav');if(!dl)return;const q=norm(t.value);let L;if(!q)L=S.navios.slice(0,50);else{const ini=[],mei=[];for(const [k,n] of navKeys){if(k.startsWith(q))ini.push(n);else if(k.includes(q))mei.push(n);if(ini.length>=50)break}L=[...ini.sort(),...mei.sort()].slice(0,50)}dl.innerHTML=L.map(n=>`<option value="${esc(n)}"></option>`).join('')}
+function navDialog(){const p=S.navPend;if(!p)return'';const w=norm(p.name).split(' ').filter(x=>x.length>=3),sim=[];for(const [h,n] of navKeys){if(w.some(x=>h.includes(x))){sim.push(n);if(sim.length>=5)break}};return `<div class="ov"><div class="pop" style="border-top-color:var(--accent);width:min(460px,100%)" role="dialog" aria-modal="true" aria-labelledby="navtit"><h2 id="navtit" style="color:var(--fg)">Navio não cadastrado</h2><p style="margin:0">Cadastrar <strong>${esc(p.name)}</strong> e usar no processo ${esc(p.code)}?</p>${sim.length?`<div style="display:grid;gap:6px"><span class="note">Parecidos já cadastrados:</span><div class="filters">${sim.map(n=>`<button data-a="navuse" data-x="${esc(n)}">Usar ${esc(n)}</button>`).join('')}</div></div>`:''}<div class="acts" style="justify-content:flex-end"><button data-a="navno">Corrigir</button><button id="navok" class="pri" data-a="navok">Cadastrar e usar</button></div></div></div>`}
+function navegar(){const q=norm(S.nq),uso={};S.rows.forEach(r=>{const n=norm(val(r,'navio'));if(n)uso[n]=(uso[n]||0)+1});const L=q?[...navKeys].filter(e=>e[0].includes(q)).map(e=>e[1]).sort():S.navios;return `<div class="cols"><section class="box"><div class="head"><h2>Navios cadastrados</h2><span class="note">${S.navios.length.toLocaleString('pt-BR')} no total</span></div><label class="vis" for="navq">Buscar navio</label><input id="navq" value="${esc(S.nq)}" placeholder="Buscar navio" style="width:100%"><div class="tw"><table class="keep"><thead><tr><th>Navio</th><th>Processos</th><th></th></tr></thead><tbody>${L.slice(0,300).map(n=>{const u=uso[norm(n)]||0;return `<tr><td>${esc(n)}</td><td class="mono">${u}</td><td style="text-align:right">${u?'<span class="note">Em uso</span>':`<button data-a="navdel" data-x="${esc(n)}">Remover</button>`}</td></tr>`}).join('')||'<tr><td colspan="3" class="empty">Nenhum navio encontrado.</td></tr>'}</tbody></table></div>${L.length>300?`<p class="note">Mostrando 300 de ${L.length}. Use a busca.</p>`:''}</section><div style="display:grid;gap:16px;align-content:start;min-width:0"><section class="box"><h2>Cadastrar navio</h2><label class="vis" for="navnew">Nome do navio</label><div class="filters"><input id="navnew" placeholder="Nome do navio" style="flex:1;min-width:160px"><button data-a="navadd" class="pri">Cadastrar</button></div></section><section class="box"><h2>Cadastrar vários</h2><p class="note">Copie a coluna do Excel e cole aqui, um navio por linha. Repetidos são ignorados.</p><label class="vis" for="navbulk">Lista de navios</label><textarea id="navbulk" rows="6" style="width:100%;font:13px var(--f-body);color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:7px"></textarea><div class="filters"><button data-a="navbulk">Adicionar lista</button><label class="btn" for="navfile" style="display:inline-flex;align-items:center">Importar arquivo</label><input id="navfile" class="vis" type="file" accept=".xlsx,.xls,.csv"></div>${S.nerr?`<p class="err" role="alert">${esc(S.nerr)}</p>`:''}</section></div></div>`}
+async function readNavFile(file){S.nerr='';if(!window.XLSX){S.nerr='Não foi possível carregar o leitor de planilhas. Cole a lista no campo acima.';redraw();return}try{const wb=XLSX.read(new Uint8Array(await file.arrayBuffer()),{type:'array'}),a=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:''});let hi=a.findIndex(r=>r.some(c=>['NAVIO','NAVIOS','NOME','EMBARCACAO','DESCRICAO'].includes(norm(c)))),ci=0;if(hi>=0)ci=a[hi].findIndex(c=>['NAVIO','NAVIOS','NOME','EMBARCACAO','DESCRICAO'].includes(norm(c)));const nomes=a.slice(hi+1).map(r=>r[ci]).filter(c=>String(c).trim()!=='');const n=addNavios(nomes);if(!nomes.length){S.nerr='Não encontrei nomes neste arquivo. Salve-o como .xlsx ou cole a coluna no campo acima.'}else{S.log.unshift({q:nowBr(),r:'Cadastro',f:'Navios importados',a:'',b:n+' novos de '+nomes.length});S.msg=n+' navios cadastrados. Repetidos ignorados: '+(nomes.length-n)+'.';save()}}catch(e){S.nerr='Não consegui ler este arquivo. Salve-o como .xlsx ou cole a coluna no campo acima.'}redraw()}
+function popup(){if(!S.pop||S.v==='imp')return'';const A=alerts();if(!A.length)return'';const tipos=[...new Set(A.map(a=>a.t))];if(S.pf&&!tipos.includes(S.pf))S.pf='';const F2=S.pf?A.filter(a=>a.t===S.pf):A,L=F2.slice(0,50);return `<div class="ov" data-a="popfora"><div class="pop" id="pop" role="dialog" aria-modal="true" aria-labelledby="poptit"><h2 id="poptit">${A.length===1?'1 pendência aguarda decisão':A.length+' pendências aguardam decisão'}</h2><p class="note">As mais urgentes aparecem primeiro. Decida aqui mesmo ou feche e volte depois.</p><div class="filters"><button data-a="pf" data-x="" class="${S.pf===''?'pri':''}">Todas (${A.length})</button>${tipos.map(t=>`<button data-a="pf" data-x="${esc(t)}" class="${S.pf===t?'pri':''}">${esc(t)} (${A.filter(a=>a.t===t).length})</button>`).join('')}</div>${F2.length>50?`<p class="note">Mostrando as 50 primeiras de ${F2.length}. Use os filtros ou ajuste as regras.</p>`:''}<div class="tw"><table><thead><tr><th>Processo</th><th>Tipo</th><th>O que falta</th><th>Responsável</th><th>Decisão</th></tr></thead><tbody>${L.map((a,j)=>`<tr><td class="mono">${esc(a.r.codigo)}<div style="font-family:var(--f-body);color:var(--muted)">${esc(val(a.r,'importador'))}</div></td><td><span class="chip ${a.u===2?'red':'o-n'}">${a.t}</span></td><td style="min-width:220px">${esc(a.d)}</td><td style="white-space:nowrap">${esc(val(a.r,'analista'))||'<span class="empty">Sem responsável</span>'}</td><td>${decisao(a,j)}</td></tr>`).join('')}</tbody></table></div><p class="note">Ao informar uma data, aperte Enter ou clique fora do campo. Sem login nesta versão, o aviso mostra as pendências de todos. Na versão final, cada responsável vê as suas e também recebe um e-mail.</p><div class="acts" style="justify-content:flex-end"><button id="popclose" data-a="popoff">Fechar</button></div></div></div>`}
+function draw(){const A=alerts(),body=S.v==='imp'?importer():S.v==='geral'?geral():S.v==='rel'?relatorios():S.v==='todos'?table():STG[S.v]?table(S.v):S.v==='cont'?containers():S.v==='hist'?hist():S.v==='regras'?regras()+digRegras():S.v==='nav'?navegar():mapa();
+  app.innerHTML=menu(A)+`<div class="main">${header(A)}<main style="display:grid;gap:14px;min-width:0">${body}</main></div>${bnav(A)}`+popup()+navDialog()+ckDialog()+'<datalist id="dl-nav"></datalist>';rotular()}
+function bnav(A){const pr=S.v==='todos'||!!STG[S.v],b=(a,x,ic,l,on,cl)=>`<button data-a="${a}"${x?` data-x="${x}"`:''} class="${on?'on ':''}${cl||''}"${on?' aria-current="page"':''}><b aria-hidden="true">${ic}</b><span>${l}</span></button>`;return `<nav class="bnav" aria-label="Navegação rápida">${b('v','geral','▤','Painel',S.v==='geral'&&!S.menu)}${b('v','todos','≡','Processos',pr&&!S.menu)}${b('v','rel','▥','Relatórios',S.v==='rel'&&!S.menu)}${b('popon','',A.length,'Decisões',false,A.length?'al':'')}${b('menu','','☰','Mais',S.menu)}</nav>`}
+function rotular(){document.querySelectorAll('table:not(.keep)').forEach(t=>{const h=[...t.querySelectorAll('thead th')].map(x=>x.textContent.replace(/[↕↑↓]/g,'').trim());t.querySelectorAll('tbody tr,tfoot tr').forEach(tr=>{[...tr.children].forEach((td,i)=>{if(h[i]&&!td.hasAttribute('colspan'))td.setAttribute('data-l',h[i])})})})}
+function redraw(){const pp=document.getElementById('pop'),ps=pp?pp.scrollTop:0,a=document.activeElement,id=a&&a.id,tw=document.getElementById('tw'),sl=tw?tw.scrollLeft:0,ss=a&&a.selectionStart;draw();const t2=document.getElementById('tw');if(t2)t2.scrollLeft=sl;const nk=document.getElementById('navok');if(nk){nk.focus();return}const ckc=document.getElementById('ckclose');if(ckc&&!(id&&document.getElementById(id)&&document.querySelector('.ckpop').contains(document.getElementById(id)))){ckc.focus({preventScroll:true});return}const pc=document.getElementById('popclose');if(pc&&(!id||!document.getElementById(id)||!document.getElementById('pop').contains(document.getElementById(id)))){pc.focus({preventScroll:true});document.getElementById('pop').scrollTop=ps;return}if(id){const el=document.getElementById(id);if(el){el.focus();if(ss!=null&&el.setSelectionRange&&el.type!=='date'&&el.type!=='number')try{el.setSelectionRange(ss,ss)}catch(e){}}}}
+function nowBr(){const t=new Date();return pad(t.getDate())+'/'+pad(t.getMonth()+1)+'/'+t.getFullYear()+' '+pad(t.getHours())+':'+pad(t.getMinutes())}
+function edit(code,key,label,type,old,nv,apply){if(String(old??'')===String(nv??''))return;apply();const fm=v=>type==='d'?br(v):v;S.log.unshift({q:nowBr(),r:code,f:label,a:fm(old),b:fm(nv)});S.log=S.log.slice(0,1000);save();if(pdown)pend=true;else setTimeout(redraw,0)}
+let pdown=false,pend=false;document.addEventListener('pointerdown',()=>{pdown=true});document.addEventListener('pointerup',()=>setTimeout(()=>{pdown=false;if(pend){pend=false;redraw()}},0))
+function commit(t){if(t.dataset.e!==undefined){const r=S.rows.find(x=>x.codigo===t.dataset.e),fd=F.find(x=>x.k===t.dataset.f);if(!r||!fd)return;let nv=t.value.trim();if(fd.k==='navio'&&nv){if(norm(nv)===norm(val(r,'navio')))return;const can=navKeys.get(norm(nv));if(can)nv=can;else{t.value=val(r,'navio');S.navPend={code:r.codigo,name:nv.toUpperCase()};if(pdown)pend=true;else setTimeout(redraw,0);return}}const v0=val(r,fd.k),st0=stage(r);edit(r.codigo,fd.k,fd.l,fd.t,v0,nv,()=>{M(r)[fd.k]=nv});const st1=stage(r);let aviso='';const ci=CHAIN.indexOf(fd.k);if(ci>0&&isISO(nv))for(let j=ci-1;j>=0;j--){const pv=val(r,CHAIN[j]);if(isISO(pv)){if(nv<pv)aviso=' Atenção: '+fd.l+' ('+br(nv)+') é anterior a '+F.find(x=>x.k===CHAIN[j]).l+' ('+br(pv)+').';break}}if(st0!==st1){S.msg=r.codigo+' foi de '+LAB[st0]+' para '+LAB[st1]+'.'+aviso;S.undo={c:r.codigo,k:fd.k,o:v0}}else if(aviso){S.msg=aviso.trim();S.undo={c:r.codigo,k:fd.k,o:v0}}}
+  else if(t.dataset.c!==undefined){const r=S.rows.find(x=>x.codigo===t.dataset.c);if(!r)return;const n=t.dataset.n,k=t.dataset.k,fd=FC.find(x=>x.k===k),c=ct(r,n),old={descarga:c.de,inicio:c.ini,free:c.fr,devol:c.dv,tarifa:c.tar,termo:c.termo}[k],v=t.value.trim();
+    if((k==='free'||k==='tarifa')&&v!==''&&(!Number.isFinite(num(v))||num(v)<0)){S.msg=fd.l+': informe um número igual ou maior que zero.';t.value=old??'';setTimeout(redraw,0);return}
+    edit(r.codigo,k,fd.l+' · '+n,fd.t,old,v,()=>{const m=M(r);m.__ct=m.__ct||{};m.__ct[n]=m.__ct[n]||{};m.__ct[n][k]=v})}}
+async function readFile(file){S.err='';if(!window.XLSX){S.err='Não foi possível carregar o leitor de planilhas. Verifique a conexão e recarregue a página.';redraw();return}
+  try{const buf=await file.arrayBuffer();let wb;
+    if(/\.csv$/i.test(file.name)){let txt;try{txt=new TextDecoder('utf-8',{fatal:true}).decode(buf)}catch(e){txt=new TextDecoder('windows-1252').decode(buf)}wb=XLSX.read(txt,{type:'string',raw:true})}
+    else wb=XLSX.read(new Uint8Array(buf),{type:'array',cellDates:false});
+    const dic=[];IMPF.forEach(x=>[x.l,...x.a].forEach(a=>dic.push([norm(a),x.k])));const known=new Set(dic.map(d=>d[0]));
+    let best=null;wb.SheetNames.forEach(sn=>{const a=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:''});for(let i=0;i<Math.min(15,a.length);i++){const n=a[i].filter(c=>known.has(norm(c))).length;if(n>0&&(!best||n>best.n))best={n,i,a}}});
+    if(!best){S.err='Não encontrei o cabeçalho. Confira se o arquivo tem uma linha com nomes de colunas, como Código e Importador.';S.map=null;redraw();return}
+    const heads=best.a[best.i].map(h=>String(h??'').trim()),nh=heads.map(norm),sel={},used=new Set();IMPF.forEach(x=>sel[x.k]='');
+    IMPF.forEach(x=>{const al=[x.l,...x.a].map(norm);const i=nh.findIndex((h,j)=>h&&!used.has(j)&&al.includes(h));if(i>=0){sel[x.k]=i;used.add(i)}});
+    IMPF.forEach(x=>{if(sel[x.k]!=='')return;const al=[x.l,...x.a].map(norm).filter(a=>a.length>=6);const i=nh.findIndex((h,j)=>h&&!used.has(j)&&al.some(a=>h.includes(a)));if(i>=0){sel[x.k]=i;used.add(i)}});
+    S.map={nome:file.name,heads,rows:best.a.slice(best.i+1).filter(r=>r.some(c=>c!=='')),sel};redraw()
+  }catch(e){S.err='Não consegui ler este arquivo. Salve-o novamente como .xlsx ou .csv e tente de novo.';S.map=null;redraw()}}
+function doImport(){const m=S.map;if(m.sel.codigo===''){S.err='Escolha a coluna do Código para importar.';redraw();return}
+  const cur=S.src?S.manual:{},by=new Map();if(!S.src)S.log=[];let semCod=0,dup=0;m.rows.forEach(a=>{const code=String(a[+m.sel.codigo]??'').trim();if(!code){semCod++;return}const r=by.get(code)||{codigo:code};if(by.has(code))dup++;IMPF.forEach(x=>{if(x.k==='codigo'||m.sel[x.k]==='')return;const v=toVal(x,a[+m.sel[x.k]]);if(v!==''&&v!=null&&(r[x.k]===undefined||r[x.k]===''))r[x.k]=v});by.set(code,r)});
+  if(!by.size){S.err='Nenhuma linha tem Código preenchido.';redraw();return}
+  S.rows=[...by.values()];S.manual=cur;addNavios(S.rows.map(r=>r.navio));S.src={nome:m.nome,total:by.size,em:nowBr(),campos:IMPF.filter(x=>m.sel[x.k]!=='').map(x=>x.k)};
+  S.msg=by.size+' processos importados.'+(semCod?' Linhas sem Código ignoradas: '+semCod+'.':'')+(dup?' Linhas com Código repetido unidas: '+dup+'.':'');S.map=null;S.v='geral';S.df=dfNovo();S.pop=true;S.pg=0;S.q=S.an=S.ca='';S.pe=false;S.err='';save();redraw()}
+app.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,x=b.dataset.x;
+  if(a==='navok'||a==='navuse'){const p=S.navPend;S.navPend=null;const r=S.rows.find(y=>y.codigo===p.code);let nome=x;if(a==='navok'){addNavios([p.name]);nome=p.name;S.log.unshift({q:nowBr(),r:'Cadastro',f:'Navio',a:'',b:p.name})}if(r)edit(r.codigo,'navio','Navio','t',val(r,'navio'),nome,()=>{M(r).navio=nome});save();redraw();return}if(a==='navno'){S.navPend=null;redraw();return}
+  if(a==='navadd'){const i=document.getElementById('navnew'),n=addNavios([i.value]);S.nerr=n?'':'Informe um nome novo. Este já está cadastrado ou está vazio.';if(n){S.log.unshift({q:nowBr(),r:'Cadastro',f:'Navio',a:'',b:i.value.trim().toUpperCase()});save()}redraw();return}
+  if(a==='navbulk'){const i=document.getElementById('navbulk'),l=i.value.split(/[\r\n]+/),n=addNavios(l);S.nerr=l.join('').trim()?'':'Cole pelo menos um navio.';if(n){S.log.unshift({q:nowBr(),r:'Cadastro',f:'Navios em lista',a:'',b:n+' novos'});S.msg=n+' navios cadastrados.';save()}redraw();return}
+  if(a==='navdel'){S.navios=S.navios.filter(n=>n!==x);navKeys.delete(norm(x));if(NAVSET.has(x))S.navDel.push(x);S.log.unshift({q:nowBr(),r:'Cadastro',f:'Navio removido',a:x,b:''});save();redraw();return}
+  if(a==='popfora'&&e.target!==b)return;if(a==='popoff'||a==='popfora'){S.pop=false;const f=document.activeElement;if(f)f.blur();redraw();return}if(a==='popon'){if(alerts().length){S.pop=true;S.menu=false}else S.msg='Nenhuma decisão pendente.';redraw();return}if(a==='menu'){S.menu=!S.menu;redraw();return}if(a==='fo'){S.fo=!S.fo;redraw();return}if(a==='rowt'){S.open[x]=!S.open[x];redraw();return}
+  if(a==='ck'){S.ck=x;redraw();return}if(a==='ckoff'||(a==='ckfora'&&e.target===b)){S.ck=null;redraw();return}if(a==='ckfora')return;if(a==='ckpdf'){const bt=b;bt.textContent='Gerando PDF…';ckPdf(S.ck);return}if(a==='exp'){exportar();return}if(a==='sit'){S.sit=x;S.pg=0;redraw();return}if(a==='dig'||a==='undig'){const r=S.rows.find(y=>y.codigo===x);if(r){const m=M(r);if(a==='dig'){const f=faltam(r);m.__dig={d:hoje(),q:nowBr()};S.log.unshift({q:nowBr(),r:x,f:'Digitação',a:'Aguardando',b:'Digitado'});S.msg=x+' marcado como digitado.'+(f.length?' Ainda faltam: '+f.join(', ')+'.':'')}else{delete m.__dig;S.log.unshift({q:nowBr(),r:x,f:'Digitação',a:'Digitado',b:'Aguardando'});S.msg=x+' voltou para aguardando digitação.'}S.undo=null;save()}redraw();return}if(a==='dgk'){S.v='todos';S.dgf=true;S.pg=0;window.scrollTo(0,0);redraw();return}if(a==='mf'){S.mf=x;S.pg=0;redraw();return}if(a==='ts'){const vid=STG[S.v]?S.v:'todos';S.ts=S.ts&&S.ts.v===vid&&S.ts.k===x?{...S.ts,d:-S.ts.d}:{v:vid,k:x,d:1};redraw();return}if(a==='obs'){obsOpen(x,b,true);return}if(a==='undo'&&S.undo){const u=S.undo,r=S.rows.find(y=>y.codigo===u.c),fd=F.find(y=>y.k===u.k);S.undo=null;if(r&&fd){edit(r.codigo,fd.k,fd.l,fd.t,val(r,fd.k),u.o,()=>{M(r)[fd.k]=u.o});S.msg='Alteração desfeita. '+r.codigo+' está em '+LAB[stage(r)]+'.'}redraw();return}
+  if(a==='df'){const k=b.dataset.k;S.df[k]=S.df[k]===x?'':x;redraw();return}if(a==='dfclear'){S.df=dfNovo();redraw();return}if(a==='rp'){S.rp=x;redraw();return}if(a==='rs'){const i=Number(x);S.rs=S.rs&&S.rs.id===S.rp&&S.rs.i===i?{...S.rs,d:-S.rs.d}:{id:S.rp,i,d:1};redraw();return}if(a==='relcopy'){relCopiar();return}
+  if(a==='v'){S.v=x;S.pg=0;S.menu=false;window.scrollTo(0,0)}else if(a==='imp'){S.v='imp';S.map=null;S.err=''}else if(a==='impno'){S.v='geral';S.map=null;S.err=''}else if(a==='impok'){doImport();return}
+  else if(a==='clear')S.clear=true;else if(a==='clearno')S.clear=false;else if(a==='clearok'){try{localStorage.removeItem(KEY)}catch(e){}S.src=null;S.rows=sample();S.manual=sampleManual();S.log=[];S.rc={};S.pf='';S.navios=[...NAVBASE];S.navDel=[];navIndex();S.navPend=null;S.nq='';S.nerr='';S.clear=false;S.v='geral';S.df=dfNovo();S.msg='Dados apagados deste navegador.';S.q=S.an=S.ca='';S.pe=false}
+  else if(a==='msgoff'){S.msg='';S.undo=null}else if(a==='noff')S.noticeOff=true;else if(a==='pf')S.pf=x;else if(a==='mo')S.mo=x;else if(a==='pg'){S.pg=Math.max(0,S.pg+Number(x))}
+  redraw()});
+app.addEventListener('input',e=>{if(e.target.dataset&&e.target.dataset.f==='navio')navFill(e.target);if(e.target.id==='navq'){S.nq=e.target.value;redraw()}if(e.target.id==='q'){S.q=e.target.value;S.pg=0;redraw()}});
+app.addEventListener('change',e=>{const t=e.target;
+  if(t.dataset.rid){const x=RULES.find(y=>y.id===t.dataset.rid),c=S.rc[x.id]||(S.rc[x.id]={}),k=t.dataset.rk;if(k==='on'){c.on=t.checked;S.log.unshift({q:nowBr(),r:'Regra',f:x.l,a:t.checked?'Desativada':'Ativa',b:t.checked?'Ativa':'Desativada'})}else{const n=Number(t.value);if(t.value===''||!Number.isInteger(n)||n<0){S.msg='Prazo: informe um número inteiro igual ou maior que zero.';redraw();return}const a=rc(x.id).days;c.days=n;S.log.unshift({q:nowBr(),r:'Regra',f:x.l,a:a+' dias',b:n+' dias'})}save();redraw();return}
+  if(t.dataset.dc){S.dc.num=t.checked;S.log.unshift({q:nowBr(),r:'Regra',f:'Numerário indica digitado',a:t.checked?'Não':'Sim',b:t.checked?'Sim':'Não'});save();redraw();return}if(t.dataset.dcf){const k=t.dataset.dcf;S.dc.campos=t.checked?[...S.dc.campos,k]:S.dc.campos.filter(x=>x!==k);S.log.unshift({q:nowBr(),r:'Regra',f:'Campo mínimo: '+F.find(x=>x.k===k).l,a:t.checked?'Fora':'Dentro',b:t.checked?'Dentro':'Fora'});save();redraw();return}if(t.dataset.df){S.df[t.dataset.df]=t.value;redraw();return}if(t.id==='navfile'){if(t.files[0])readNavFile(t.files[0]);return}if(t.id==='file'){if(t.files[0])readFile(t.files[0]);return}
+  if(t.id==='fan'){S.an=t.value;S.pg=0;redraw();return}if(t.id==='fca'){S.ca=t.value;S.pg=0;redraw();return}if(t.id==='fdg'){S.dgf=t.checked;S.pg=0;redraw();return}if(t.id==='fpe'){S.pe=t.checked;S.pg=0;redraw();return}
+  if(t.dataset.m){S.map.sel[t.dataset.m]=t.value;S.err='';redraw();return}
+  if(t.tagName==='SELECT')commit(t)});
+app.addEventListener('focusin',e=>{if(e.target.dataset&&e.target.dataset.f==='navio')navFill(e.target)});
+app.addEventListener('focusout',e=>{const t=e.target;if(t.tagName==='INPUT'&&(t.dataset.e!==undefined||t.dataset.c!==undefined))commit(t)});
+app.addEventListener('keydown',e=>{const t=e.target;if(e.key==='Enter'&&t.tagName==='INPUT'&&(t.dataset.e!==undefined||t.dataset.c!==undefined))t.blur()});
+app.addEventListener('dragover',e=>{const d=e.target.closest&&e.target.closest('#drop');if(d){e.preventDefault();d.classList.add('over')}});
+app.addEventListener('dragleave',e=>{const d=e.target.closest&&e.target.closest('#drop');if(d)d.classList.remove('over')});
+app.addEventListener('drop',e=>{const d=e.target.closest&&e.target.closest('#drop');if(d){e.preventDefault();d.classList.remove('over');const fl=e.dataTransfer.files[0];if(fl)readFile(fl)}});
+document.addEventListener('keydown',e=>{if(S.ck&&e.key==='Escape'){S.ck=null;redraw();return}if(S.menu&&e.key==='Escape'){S.menu=false;redraw();return}if(S.navPend&&e.key==='Escape'){S.navPend=null;redraw();return}const p=document.getElementById('pop');if(!p)return;if(e.key==='Escape'){S.pop=false;const f=document.activeElement;if(f)f.blur();redraw();return}if(e.key==='Tab'){const it=[...p.querySelectorAll('select,input,button')];if(!it.length)return;const a=it[0],z=it[it.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}});
+const tip=document.createElement('div');tip.id='tip';tip.hidden=true;tip.setAttribute('role','tooltip');document.body.appendChild(tip);
+const tipPos=(x,y)=>{const w=tip.offsetWidth,h=tip.offsetHeight;tip.style.left=Math.max(8,Math.min(innerWidth-w-8,x+12))+'px';tip.style.top=Math.max(8,y-h-10)+'px'};
+app.addEventListener('mousemove',e=>{const t=e.target.closest&&e.target.closest('[data-tip]');if(!t){tip.hidden=true;return}tip.textContent=t.dataset.tip;tip.hidden=false;tipPos(e.clientX,e.clientY)});
+app.addEventListener('mouseleave',()=>{tip.hidden=true});
+app.addEventListener('focusin',e=>{const t=e.target.closest&&e.target.closest('[data-tip]');if(t&&t.matches(':focus-visible')){tip.textContent=t.dataset.tip;tip.hidden=false;const r=t.getBoundingClientRect();tipPos(r.left,r.top)}});
+app.addEventListener('focusout',()=>{tip.hidden=true});
+const obsBox=document.createElement('div');obsBox.id='obsbox';obsBox.hidden=true;obsBox.setAttribute('role','dialog');obsBox.setAttribute('aria-label','Observação');document.body.appendChild(obsBox);
+let obsCode=null,obsT=null,obsDraft={d:'',t:''};const hoverOk=matchMedia('(hover:hover) and (pointer:fine)');
+function obsAnchor(){return obsCode?document.querySelector(`[data-obs="${CSS.escape(obsCode)}"]`):null}
+function obsPlace(){const a=obsAnchor();if(innerWidth<=760){obsBox.classList.add('sheet');obsBox.style.left=obsBox.style.top='';return}obsBox.classList.remove('sheet');if(!a){obsClose();return}const r=a.getBoundingClientRect(),w=obsBox.offsetWidth,h=obsBox.offsetHeight;if(r.bottom<0||r.top>innerHeight){obsClose();return}obsBox.style.left=Math.max(8,Math.min(innerWidth-w-8,r.left))+'px';obsBox.style.top=(r.bottom+6+h<innerHeight?r.bottom+6:Math.max(8,r.top-h-6))+'px'}
+function obsRender(){const r=S.rows.find(x=>x.codigo===obsCode);if(!r){obsClose();return}const n=notas(r);
+  obsBox.innerHTML=`<div class="ob-h"><div><b>Observação</b><span class="mono">${esc(r.codigo)} · ${esc(val(r,'importador'))}</span></div><button data-ob="x" aria-label="Fechar">×</button></div><div class="ob-l">${n.length?n.map(x=>`<div class="ob-i"><span class="mono" title="${x.d?br(x.d):'Sem data'}">${x.d?br(x.d).slice(0,5):'—'}</span><span>${esc(x.t)}</span></div>`).join(''):'<p class="note">Nenhuma anotação ainda.</p>'}</div><form class="ob-f" novalidate><label class="vis" for="obd">Data</label><input id="obd" type="date" value="${obsDraft.d||hoje()}"><label class="vis" for="obt">Anotação</label><input id="obt" value="${esc(obsDraft.t)}" placeholder="Ag. resposta do cliente" autocomplete="off"><button class="pri" type="submit">Adicionar</button></form><p class="err" id="obe" role="alert"></p>`}
+function obsOpen(code,anchor,foco){clearTimeout(obsT);if(obsCode!==code){obsCode=code;obsDraft={d:'',t:''};obsRender()}obsBox.hidden=false;obsPlace();if(foco){const t=document.getElementById('obt');if(t)t.focus()}}
+function obsClose(){clearTimeout(obsT);obsBox.hidden=true;obsCode=null}
+function obsLater(){clearTimeout(obsT);obsT=setTimeout(()=>{if(!obsBox.contains(document.activeElement)&&!obsBox.matches(':hover'))obsClose()},350)}
+app.addEventListener('mouseover',e=>{if(!hoverOk.matches)return;const a=e.target.closest&&e.target.closest('[data-obs]');if(!a)return;clearTimeout(obsT);if(obsCode===a.dataset.obs&&!obsBox.hidden)return;if(obsCode&&obsBox.contains(document.activeElement)&&obsDraft.t)return;obsT=setTimeout(()=>obsOpen(a.dataset.obs,a,false),280)});
+app.addEventListener('mouseout',e=>{const a=e.target.closest&&e.target.closest('[data-obs]');if(a&&!a.contains(e.relatedTarget))obsLater()});
+obsBox.addEventListener('mouseenter',()=>clearTimeout(obsT));obsBox.addEventListener('mouseleave',obsLater);
+obsBox.addEventListener('input',e=>{if(e.target.id==='obt'){obsDraft.t=e.target.value;document.getElementById('obe').textContent=''}if(e.target.id==='obd')obsDraft.d=e.target.value});
+obsBox.addEventListener('click',e=>{if(e.target.closest('[data-ob="x"]'))obsClose()});
+obsBox.addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Escape'){const c=obsCode;obsClose();const a=document.querySelector(`[data-obs="${CSS.escape(c)}"]`);if(a)a.focus()}});
+obsBox.addEventListener('submit',e=>{e.preventDefault();const r=S.rows.find(x=>x.codigo===obsCode);if(!r)return;const t=document.getElementById('obt').value.trim(),d=document.getElementById('obd').value||hoje();if(!t){document.getElementById('obe').textContent='Escreva a anotação antes de adicionar.';document.getElementById('obt').focus();return}const m=M(r);m.__obs=[...(m.__obs||[]),{d,t,q:nowBr()}].sort((a,b)=>(a.d||'').localeCompare(b.d||''));S.log.unshift({q:nowBr(),r:r.codigo,f:'Observação',a:'',b:br(d)+' – '+t});save();obsDraft={d:'',t:''};redraw();obsRender();obsPlace();document.getElementById('obt').focus()});
+document.addEventListener('mousedown',e=>{if(!obsBox.hidden&&!obsBox.contains(e.target)&&!(e.target.closest&&e.target.closest('[data-obs]')))obsClose()});
+addEventListener('scroll',()=>{if(!obsBox.hidden)obsPlace()},true);addEventListener('resize',()=>{if(!obsBox.hidden)obsPlace()});
+redraw();
+</script>
+</body>
+</html>
